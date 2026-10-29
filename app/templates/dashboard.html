@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block heading %}{{ greeting }}{% endblock %}
+{% block subtitle %}Turn lecture material into something you can actually study.{% endblock %}
+{% block content %}
+<section class="hero">
+  <div>
+    <h2>Build a study set</h2>
+    <p>Add a lecture recording, a document, or your notes and get a study guide, flashcards, and a practice quiz.</p>
+  </div>
+  <a class="button light" href="/lectures/{{ lectures[0].id }}">Open a sample</a>
+</section>
+<section class="cards">
+  <a class="card source-card" href="/lectures/new?mode=file"><span class="eyebrow">AUDIO</span><h3>Upload a recording</h3><p>MP3, WAV, or M4A.</p><span class="action">Choose file →</span></a>
+  <a class="card source-card" href="/lectures/new?mode=file"><span class="eyebrow">DOC</span><h3>Upload a document</h3><p>PDF, TXT, or Markdown.</p><span class="action">Choose file →</span></a>
+  <a class="card source-card" href="/lectures/new?mode=text"><span class="eyebrow">TEXT</span><h3>Paste lecture notes</h3><p>Bullet points work too.</p><span class="action">Paste notes →</span></a>
+</section>
+<div class="section-title"><h2>Recent lectures</h2><a class="action" href="/library">View library →</a></div>
+{% include "lecture_rows.html" %}
+{% endblock %}

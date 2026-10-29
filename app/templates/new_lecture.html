@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Add Lecture{% endblock %}
+{% block heading %}Add Lecture Material{% endblock %}
+{% block subtitle %}Upload a file or paste your notes.{% endblock %}
+{% block content %}
+<nav class="tabs" style="max-width:420px">
+  <a class="tab {{ 'active' if mode == 'file' }}" href="/lectures/new?mode=file">Upload a file</a>
+  <a class="tab {{ 'active' if mode == 'text' }}" href="/lectures/new?mode=text">Paste notes</a>
+</nav>
+<div class="card">
+  <div class="forms-grid">
+    <div><label><b>Lecture title</b></label><input class="input" name="title" placeholder="Week 5: Gradient descent" style="margin:8px 0 16px"></div>
+    <div><label><b>Course</b></label><input class="input" name="course" placeholder="CS 439" style="margin:8px 0 16px"></div>
+  </div>
+  {% if mode == "text" %}
+  <label><b>Lecture notes</b></label>
+  <textarea class="input" name="notes" placeholder="Paste your notes here..." style="margin:8px 0 16px"></textarea>
+  {% else %}
+  <div class="filebox">
+    <p><b>PDF, TXT, Markdown, or audio (MP3, WAV, M4A)</b></p>
+    <input name="file" type="file" accept=".pdf,.txt,.md,.mp3,.wav,.m4a">
+  </div>
+  {% endif %}
+  <button class="button" type="button" disabled style="margin-top:16px">Create study set</button>
+  <p class="disabled-note">Processing isn't available yet. Open a sample lecture from the library to see how study sets look.</p>
+</div>
+{% endblock %}

@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}Lecture Library{% endblock %}
+{% block heading %}Lecture Library{% endblock %}
+{% block subtitle %}Your study sets.{% endblock %}
+{% block content %}
+<div class="section-title"><h2>Study sets</h2><a class="button" href="/lectures/new?mode=file">+ Add lecture</a></div>
+{% include "lecture_rows.html" %}
+{% endblock %}

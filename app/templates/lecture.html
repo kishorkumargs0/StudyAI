@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}{{ lecture.title }}{% endblock %}
+{% block heading %}{{ lecture.title }}{% endblock %}
+{% block subtitle %}{{ lecture.course }}{% endblock %}
+{% block content %}
+<div class="meta-row">
+  <span class="tag sample-tag">SAMPLE</span>
+  <span class="tag">{{ lecture.source }}</span>
+  <span class="tag">{{ lecture.words }} words</span>
+</div>
+<nav class="tabs">
+  {% for key, label in [("guide", "Study Guide"), ("flashcards", "Flashcards"), ("quiz", "Practice Quiz")] %}
+  <a class="tab {{ 'active' if tab == key }}" href="/lectures/{{ lecture.id }}?tab={{ key }}">{{ label }}</a>
+  {% endfor %}
+</nav>
+
+{% if tab == "flashcards" %}
+  {% set cards = lecture.flashcards %}
+  {% set card = cards[card_index] %}
+  <div class="center"><p class="subtitle">Card {{ card_index + 1 }} of {{ cards|length }}</p></div>
+  <div class="flashcard"><div>
+    <span class="eyebrow">{{ "ANSWER" if side == "back" else "QUESTION" }}</span>
+    <h2>{{ card.back if side == "back" else card.front }}</h2>
+  </div></div>
+  <div class="controls">
+    <a class="button ghost" href="/lectures/{{ lecture.id }}?tab=flashcards&card={{ (card_index - 1) % cards|length }}">Previous</a>
+    <a class="button" href="/lectures/{{ lecture.id }}?tab=flashcards&card={{ card_index }}&side={{ 'front' if side == 'back' else 'back' }}">{{ "Show question" if side == "back" else "Reveal answer" }}</a>
+    <a class="button ghost" href="/lectures/{{ lecture.id }}?tab=flashcards&card={{ (card_index + 1) % cards|length }}">Next</a>
+  </div>
+
+{% elif tab == "quiz" %}
+  {% set quiz = lecture.quiz %}
+  {% set question = quiz[q_index] %}
+  <div class="card question">
+    <p class="subtitle">Question {{ q_index + 1 }} of {{ quiz|length }}</p>
+    <h3>{{ question.question }}</h3>
+    {% for option in question.options %}
+      {% if pick >= 0 %}
+        <div class="option {{ 'correct' if loop.index0 == question.answer else ('wrong' if loop.index0 == pick) }}">{{ option }}</div>
+      {% else %}
+        <a class="option" href="/lectures/{{ lecture.id }}?tab=quiz&q={{ q_index }}&pick={{ loop.index0 }}">{{ option }}</a>
+      {% endif %}
+    {% endfor %}
+    {% if pick >= 0 %}
+      <div class="notice"><b>{{ "Correct." if pick == question.answer else "Not quite." }}</b></div>
+    {% endif %}
+    <div class="controls" style="margin-top:14px">
+      <a class="button" href="/lectures/{{ lecture.id }}?tab=quiz&q={{ (q_index + 1) % quiz|length }}">Next question</a>
+    </div>
+  </div>
+
+{% else %}
+  <section class="guide-grid">
+    <div class="card">
+      <h3 style="margin-top:0">Summary</h3>
+      <p class="summary">{{ lecture.summary }}</p>
+      <h3>Key concepts</h3>
+      {% for row in lecture.concepts %}<div class="concept"><b>{{ row.term }}</b><span>{{ row.detail }}</span></div>{% endfor %}
+    </div>
+    <aside>
+      <div class="notice" style="margin-top:0">This is sample content. Study sets for your own lectures will show up here once processing is added.</div>
+    </aside>
+  </section>
+{% endif %}
+{% endblock %}

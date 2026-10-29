@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{% block title %}StudyAI{% endblock %} | StudyAI</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><span class="brandmark">S</span><span>StudyAI</span></div>
+    <a class="navlink {{ 'active' if active == 'dashboard' }}" href="/">Dashboard</a>
+    <a class="navlink {{ 'active' if active == 'library' }}" href="/library">Lecture Library</a>
+  </aside>
+  <main class="main">
+    <header class="header">
+      <div><h1>{% block heading %}{% endblock %}</h1><p class="subtitle">{% block subtitle %}{% endblock %}</p></div>
+    </header>
+    {% block content %}{% endblock %}
+  </main>
+</div>
+</body>
+</html>

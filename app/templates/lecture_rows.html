@@ -1,0 +1,10 @@
+{% for lecture in lectures %}
+<div class="lecture-row">
+  <div class="source-icon">{{ lecture.kind }}</div>
+  <div>
+    <div class="lecture-title">{{ lecture.title }} <span class="tag sample-tag">SAMPLE</span></div>
+    <div class="lecture-meta">{{ lecture.course }} &nbsp;|&nbsp; {{ lecture.source }}</div>
+  </div>
+  <a class="button soft" href="/lectures/{{ lecture.id }}">Open</a>
+</div>
+{% endfor %}
