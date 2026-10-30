@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}{{ lecture.title }}{% endblock %}
+{% block heading %}{{ lecture.title }}{% endblock %}
+{% block subtitle %}{{ lecture.course }}{% endblock %}
+{% block content %}
+<div class="meta-row">
+  <span class="tag">pasted notes</span>
+  <span class="tag">{{ lecture.notes.split()|length }} words</span>
+</div>
+<div class="card">
+  <h3 style="margin-top:0">Your notes</h3>
+  <p class="summary" style="white-space:pre-line">{{ lecture.notes }}</p>
+</div>
+<div class="notice">Saved. Study guides, flashcards, and quizzes for your own notes are coming next.</div>
+{% endblock %}

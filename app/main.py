@@ -1,13 +1,14 @@
 from datetime import datetime
 from pathlib import Path
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Form, Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.exceptions import HTTPException
 
+from app import db
 from app.samples import LECTURES, find
 
 BASE = Path(__file__).parent
@@ -15,6 +16,9 @@ BASE = Path(__file__).parent
 app = FastAPI(title="StudyAI")
 app.mount("/static", StaticFiles(directory=BASE / "static"), name="static")
 templates = Jinja2Templates(directory=BASE / "templates")
+db.init()
+
+MIN_WORDS = 30
 
 
 def greeting():
@@ -42,6 +46,30 @@ def library(request: Request):
 def new_lecture(request: Request, mode: str = "file"):
     mode = "text" if mode == "text" else "file"
     return templates.TemplateResponse(request, "new_lecture.html", {"active": "library", "mode": mode})
+
+
+@app.post("/lectures")
+def save_lecture(request: Request, title: str = Form(""), course: str = Form(""), notes: str = Form("")):
+    title, course, notes = title.strip(), course.strip(), notes.strip()
+    error = None
+    if not title or not course:
+        error = "Add a title and a course."
+    elif len(notes.split()) < MIN_WORDS:
+        error = f"Paste at least {MIN_WORDS} words of notes."
+    if error:
+        form = {"title": title, "course": course, "notes": notes}
+        context = {"active": "library", "mode": "text", "error": error, "form": form}
+        return templates.TemplateResponse(request, "new_lecture.html", context, status_code=400)
+    lecture_id = db.add_lecture(title, course, notes)
+    return RedirectResponse(f"/notes/{lecture_id}", status_code=303)
+
+
+@app.get("/notes/{lecture_id}", response_class=HTMLResponse)
+def saved_notes(request: Request, lecture_id: int):
+    lecture = db.get_lecture(lecture_id)
+    if lecture is None:
+        raise HTTPException(status_code=404)
+    return templates.TemplateResponse(request, "notes.html", {"active": "library", "lecture": lecture})
 
 
 @app.get("/lectures/{lecture_id}", response_class=HTMLResponse)
