@@ -30,9 +30,7 @@ def init():
 
 def add_lecture(title, course, notes):
     conn = connect()
-    cursor = conn.execute(
-        "INSERT INTO lectures (title, course, notes) VALUES (?, ?, ?)", (title, course, notes)
-    )
+    cursor = conn.execute("INSERT INTO lectures (title, course, notes) VALUES (?, ?, ?)", (title, course, notes))
     conn.commit()
     lecture_id = cursor.lastrowid
     conn.close()

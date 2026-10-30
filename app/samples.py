@@ -14,30 +14,57 @@ LECTURES = [
         ),
         "concepts": [
             {"term": "Learning Rate", "detail": "The learning rate controls the size of each update."},
-            {"term": "Activation Functions", "detail": "Functions like ReLU let the network model nonlinear relationships."},
-            {"term": "Backpropagation", "detail": "Uses the chain rule to find how much each weight contributed to the loss."},
+            {
+                "term": "Activation Functions",
+                "detail": "Functions like ReLU let the network model nonlinear relationships.",
+            },
+            {
+                "term": "Backpropagation",
+                "detail": "Uses the chain rule to find how much each weight contributed to the loss.",
+            },
             {"term": "Overfitting", "detail": "When a model memorizes its training data and does poorly on new data."},
         ],
         "flashcards": [
             {"front": "The _____ controls the size of each update.", "back": "Learning Rate"},
-            {"front": "_____ such as ReLU let the network model nonlinear relationships.", "back": "Activation Functions"},
-            {"front": "_____ applies the chain rule to find each weight's share of the loss.", "back": "Backpropagation"},
+            {
+                "front": "_____ such as ReLU let the network model nonlinear relationships.",
+                "back": "Activation Functions",
+            },
+            {
+                "front": "_____ applies the chain rule to find each weight's share of the loss.",
+                "back": "Backpropagation",
+            },
             {"front": "_____ happens when a model memorizes its training examples.", "back": "Overfitting"},
         ],
         "quiz": [
             {
                 "question": "What happens if the learning rate is too large?",
-                "options": ["Training gets slower", "It can skip over a good solution", "The loss can't be measured", "Layers are removed"],
+                "options": [
+                    "Training gets slower",
+                    "It can skip over a good solution",
+                    "The loss can't be measured",
+                    "Layers are removed",
+                ],
                 "answer": 1,
             },
             {
                 "question": "Why are nonlinear activations needed?",
-                "options": ["They make training faster", "They remove the bias", "Without them, stacked layers act like one linear model", "They prevent overfitting"],
+                "options": [
+                    "They make training faster",
+                    "They remove the bias",
+                    "Without them, stacked layers act like one linear model",
+                    "They prevent overfitting",
+                ],
                 "answer": 2,
             },
             {
                 "question": "Which of these helps reduce overfitting?",
-                "options": ["Early stopping", "A larger learning rate", "Removing validation data", "More hidden layers"],
+                "options": [
+                    "Early stopping",
+                    "A larger learning rate",
+                    "Removing validation data",
+                    "More hidden layers",
+                ],
                 "answer": 0,
             },
         ],
@@ -64,7 +91,10 @@ LECTURES = [
             {"front": "A _____ maps each key to an index in the bucket array.", "back": "Hash Function"},
             {"front": "A _____ happens when two keys map to the same index.", "back": "Collision"},
             {"front": "The _____ is entries divided by buckets.", "back": "Load Factor"},
-            {"front": "When the table gets too full it is resized and every entry goes through _____.", "back": "Rehashing"},
+            {
+                "front": "When the table gets too full it is resized and every entry goes through _____.",
+                "back": "Rehashing",
+            },
         ],
         "quiz": [
             {

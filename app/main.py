@@ -73,8 +73,15 @@ def saved_notes(request: Request, lecture_id: int):
 
 
 @app.get("/lectures/{lecture_id}", response_class=HTMLResponse)
-def lecture_page(request: Request, lecture_id: int, tab: str = "guide", card: int = 0, side: str = "front",
-                 q: int = 0, pick: int = -1):
+def lecture_page(
+    request: Request,
+    lecture_id: int,
+    tab: str = "guide",
+    card: int = 0,
+    side: str = "front",
+    q: int = 0,
+    pick: int = -1,
+):
     lecture = find(lecture_id)
     if lecture is None:
         raise HTTPException(status_code=404)
