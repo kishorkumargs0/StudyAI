@@ -6,10 +6,17 @@
 <div class="meta-row">
   <span class="tag">pasted notes</span>
   <span class="tag">{{ lecture.notes.split()|length }} words</span>
+  <span class="tag">{{ sentences|length }} sentences</span>
 </div>
 <div class="card">
   <h3 style="margin-top:0">Your notes</h3>
   <p class="summary" style="white-space:pre-line">{{ lecture.notes }}</p>
+</div>
+<div class="card">
+  <h3 style="margin-top:0">Sentences</h3>
+  <ol class="sentence-list">
+    {% for sentence in sentences %}<li>{{ sentence }}</li>{% endfor %}
+  </ol>
 </div>
 <div class="notice">Saved. Study guides, flashcards, and quizzes for your own notes are coming next.</div>
 {% endblock %}

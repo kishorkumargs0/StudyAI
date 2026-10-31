@@ -10,6 +10,7 @@ from starlette.exceptions import HTTPException
 
 from app import db
 from app.samples import LECTURES, find
+from app.text import split_sentences
 
 BASE = Path(__file__).parent
 
@@ -69,7 +70,8 @@ def saved_notes(request: Request, lecture_id: int):
     lecture = db.get_lecture(lecture_id)
     if lecture is None:
         raise HTTPException(status_code=404)
-    return templates.TemplateResponse(request, "notes.html", {"active": "library", "lecture": lecture})
+    context = {"active": "library", "lecture": lecture, "sentences": split_sentences(lecture["notes"])}
+    return templates.TemplateResponse(request, "notes.html", context)
 
 
 @app.get("/lectures/{lecture_id}", response_class=HTMLResponse)

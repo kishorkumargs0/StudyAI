@@ -47,6 +47,8 @@ h1 { margin: 0; color: var(--ink); font-size: 34px; line-height: 1.15; letter-sp
 .meta-row .tag { background: #e8ecf3; color: var(--muted); letter-spacing: 0; }
 .guide-grid { display: grid; grid-template-columns: minmax(0,1.55fr) minmax(270px,.85fr); gap: 16px; }
 .summary { color: var(--text); line-height: 1.7; }
+.sentence-list { margin: 0; padding-left: 22px; line-height: 1.7; }
+.sentence-list li { margin-bottom: 6px; }
 .concept { display: grid; grid-template-columns: 145px 1fr; gap: 12px; margin: 8px 0; padding: 12px 13px; border-radius: 11px; background: var(--purple-soft); font-size: 13px; line-height: 1.45; }
 .concept b { color: var(--purple-dark); }
 .notice { margin-top: 14px; padding: 18px; border-radius: 15px; background: var(--amber); color: var(--amber-ink); line-height: 1.5; }
