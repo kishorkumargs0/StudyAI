@@ -42,3 +42,10 @@ def get_lecture(lecture_id):
     row = conn.execute("SELECT * FROM lectures WHERE id = ?", (lecture_id,)).fetchone()
     conn.close()
     return dict(row) if row else None
+
+
+def list_lectures():
+    conn = connect()
+    rows = conn.execute("SELECT * FROM lectures ORDER BY created_at DESC, id DESC").fetchall()
+    conn.close()
+    return [dict(row) for row in rows]

@@ -3,6 +3,19 @@
 {% block heading %}Lecture Library{% endblock %}
 {% block subtitle %}Your study sets.{% endblock %}
 {% block content %}
-<div class="section-title"><h2>Study sets</h2><a class="button" href="/lectures/new?mode=file">+ Add lecture</a></div>
+<div class="section-title"><h2>Your notes</h2><a class="button" href="/lectures/new?mode=text">+ Add lecture</a></div>
+{% for lecture in saved %}
+<div class="lecture-row">
+  <div class="source-icon">TEXT</div>
+  <div>
+    <div class="lecture-title">{{ lecture.title }}</div>
+    <div class="lecture-meta">{{ lecture.course }} &nbsp;|&nbsp; {{ lecture.notes.split()|length }} words &nbsp;|&nbsp; added {{ lecture.created_at[:10] }}</div>
+  </div>
+  <a class="button soft" href="/notes/{{ lecture.id }}">Open</a>
+</div>
+{% else %}
+<div class="card empty">Nothing saved yet. <a href="/lectures/new?mode=text">Paste your first notes.</a></div>
+{% endfor %}
+<div class="section-title spaced"><h2>Sample study sets</h2></div>
 {% include "lecture_rows.html" %}
 {% endblock %}

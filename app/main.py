@@ -40,7 +40,8 @@ def dashboard(request: Request):
 
 @app.get("/library", response_class=HTMLResponse)
 def library(request: Request):
-    return templates.TemplateResponse(request, "library.html", {"active": "library", "lectures": LECTURES})
+    context = {"active": "library", "lectures": LECTURES, "saved": db.list_lectures()}
+    return templates.TemplateResponse(request, "library.html", context)
 
 
 @app.get("/lectures/new", response_class=HTMLResponse)

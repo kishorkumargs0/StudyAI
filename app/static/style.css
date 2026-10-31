@@ -35,6 +35,8 @@ h1 { margin: 0; color: var(--ink); font-size: 34px; line-height: 1.15; letter-sp
 .source-card .action { margin-top: auto; color: var(--purple); font-size: 13px; font-weight: 800; }
 .section-title { display: flex; align-items: center; justify-content: space-between; margin: 0 0 10px; }
 .section-title h2 { margin: 0; color: var(--ink); font-size: 20px; }
+.section-title.spaced { margin-top: 26px; }
+.empty { color: var(--muted); margin-bottom: 10px; }
 .lecture-row { display: grid; grid-template-columns: 56px 1fr auto; align-items: center; gap: 14px; margin: 8px 0; padding: 14px 16px; background: white; border: 1px solid var(--edge); border-radius: 14px; }
 .source-icon { width: 52px; height: 42px; display: grid; place-items: center; border-radius: 11px; background: var(--purple-soft); color: var(--purple-dark); font-size: 10px; font-weight: 900; }
 .lecture-title { color: var(--ink); font-weight: 800; }
