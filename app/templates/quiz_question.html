@@ -1,0 +1,16 @@
+<div class="quiz-item" id="q{{ index }}">
+  <p><b>{{ index + 1 }}.</b> {{ question.question }}</p>
+  {% if pick >= 0 %}
+    {% for option in question.options %}
+    <div class="option {{ 'correct' if loop.index0 == question.answer else ('wrong' if loop.index0 == pick) }}">{{ "ABCD"[loop.index0] }}. {{ option }}</div>
+    {% endfor %}
+    <p class="feedback"><b>{{ "Correct." if pick == question.answer else "Not quite." }}</b> {{ question.explanation }}</p>
+    <a class="action" href="/notes/{{ lecture.id }}#q{{ index }}">Try again</a>
+  {% else %}
+  <form method="post" action="/notes/{{ lecture.id }}/quiz/{{ index }}" hx-post="/notes/{{ lecture.id }}/quiz/{{ index }}" hx-target="#q{{ index }}" hx-swap="outerHTML">
+    {% for option in question.options %}
+    <button class="option" type="submit" name="picked" value="{{ loop.index0 }}">{{ "ABCD"[loop.index0] }}. {{ option }}</button>
+    {% endfor %}
+  </form>
+  {% endif %}
+</div>

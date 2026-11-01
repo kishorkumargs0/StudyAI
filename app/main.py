@@ -88,7 +88,7 @@ async def save_lecture(
 
 
 @app.get("/notes/{lecture_id}", response_class=HTMLResponse)
-def saved_notes(request: Request, lecture_id: int):
+def saved_notes(request: Request, lecture_id: int, q: int = -1, pick: int = -1):
     lecture = db.get_lecture(lecture_id)
     if lecture is None:
         raise HTTPException(status_code=404)
@@ -97,8 +97,27 @@ def saved_notes(request: Request, lecture_id: int):
         "lecture": lecture,
         "sentences": split_sentences(lecture["notes"]),
         "study": build_study_set(lecture["notes"]),
+        "progress": db.quiz_progress(lecture_id),
+        "answered": q,
+        "pick": pick,
     }
     return templates.TemplateResponse(request, "notes.html", context)
+
+
+@app.post("/notes/{lecture_id}/quiz/{index}")
+def answer_question(request: Request, lecture_id: int, index: int, picked: int = Form(-1)):
+    lecture = db.get_lecture(lecture_id)
+    if lecture is None:
+        raise HTTPException(status_code=404)
+    quiz = build_study_set(lecture["notes"])["quiz"]
+    if not 0 <= index < len(quiz) or not 0 <= picked < len(quiz[index]["options"]):
+        raise HTTPException(status_code=400)
+    question = quiz[index]
+    db.add_attempt(lecture_id, index, question["concept"], picked, picked == question["answer"])
+    if request.headers.get("HX-Request"):
+        context = {"lecture": lecture, "question": question, "index": index, "pick": picked}
+        return templates.TemplateResponse(request, "quiz_question.html", context)
+    return RedirectResponse(f"/notes/{lecture_id}?q={index}&pick={picked}#q{index}", status_code=303)
 
 
 @app.get("/lectures/{lecture_id}", response_class=HTMLResponse)

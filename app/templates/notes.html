@@ -32,18 +32,9 @@
 {% if study.quiz %}
 <div class="card">
   <h3 style="margin-top:0">Practice quiz</h3>
+  {% if progress.answered %}<p class="muted">{{ progress.answered }} answered, {{ (100 * progress.correct / progress.answered)|round|int }}% correct</p>{% endif %}
   {% for question in study.quiz %}
-  <div class="quiz-item">
-    <p><b>{{ loop.index }}.</b> {{ question.question }}</p>
-    <ol class="quiz-options" type="A">
-      {% for option in question.options %}<li>{{ option }}</li>{% endfor %}
-    </ol>
-    <details class="cloze">
-      <summary>Show answer</summary>
-      <p>{{ "ABCD"[question.answer] }}. {{ question.options[question.answer] }}</p>
-      <span class="muted">{{ question.explanation }}</span>
-    </details>
-  </div>
+    {% with index=loop.index0, pick=(pick if answered == loop.index0 else -1) %}{% include "quiz_question.html" %}{% endwith %}
   {% endfor %}
 </div>
 {% endif %}
@@ -57,5 +48,5 @@
     {% for sentence in sentences %}<li>{{ sentence }}</li>{% endfor %}
   </ol>
 </div>
-<div class="notice">Quiz scoring and progress tracking are coming next.</div>
+<div class="notice">Flashcard scheduling and study insights are coming next.</div>
 {% endblock %}

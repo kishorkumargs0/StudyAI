@@ -24,6 +24,19 @@ def init():
         )
         """
     )
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS quiz_attempts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            lecture_id INTEGER NOT NULL REFERENCES lectures(id),
+            question INTEGER NOT NULL,
+            concept TEXT NOT NULL,
+            picked INTEGER NOT NULL,
+            correct INTEGER NOT NULL,
+            answered_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+        )
+        """
+    )
     columns = {row["name"] for row in conn.execute("PRAGMA table_info(lectures)")}
     if "source" not in columns:
         conn.execute("ALTER TABLE lectures ADD COLUMN source TEXT NOT NULL DEFAULT 'pasted notes'")
@@ -54,3 +67,23 @@ def list_lectures():
     rows = conn.execute("SELECT * FROM lectures ORDER BY created_at DESC, id DESC").fetchall()
     conn.close()
     return [dict(row) for row in rows]
+
+
+def add_attempt(lecture_id, question, concept, picked, correct):
+    conn = connect()
+    conn.execute(
+        "INSERT INTO quiz_attempts (lecture_id, question, concept, picked, correct) VALUES (?, ?, ?, ?, ?)",
+        (lecture_id, question, concept, picked, int(correct)),
+    )
+    conn.commit()
+    conn.close()
+
+
+def quiz_progress(lecture_id):
+    conn = connect()
+    row = conn.execute(
+        "SELECT COUNT(*) AS answered, COALESCE(SUM(correct), 0) AS correct FROM quiz_attempts WHERE lecture_id = ?",
+        (lecture_id,),
+    ).fetchone()
+    conn.close()
+    return dict(row)
