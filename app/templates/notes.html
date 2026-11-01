@@ -29,6 +29,24 @@
   {% endfor %}
 </div>
 {% endif %}
+{% if study.quiz %}
+<div class="card">
+  <h3 style="margin-top:0">Practice quiz</h3>
+  {% for question in study.quiz %}
+  <div class="quiz-item">
+    <p><b>{{ loop.index }}.</b> {{ question.question }}</p>
+    <ol class="quiz-options" type="A">
+      {% for option in question.options %}<li>{{ option }}</li>{% endfor %}
+    </ol>
+    <details class="cloze">
+      <summary>Show answer</summary>
+      <p>{{ "ABCD"[question.answer] }}. {{ question.options[question.answer] }}</p>
+      <span class="muted">{{ question.explanation }}</span>
+    </details>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
 <div class="card">
   <h3 style="margin-top:0">Your notes</h3>
   <p class="summary" style="white-space:pre-line">{{ lecture.notes }}</p>
@@ -39,5 +57,5 @@
     {% for sentence in sentences %}<li>{{ sentence }}</li>{% endfor %}
   </ol>
 </div>
-<div class="notice">Practice quizzes for your own notes are coming next.</div>
+<div class="notice">Quiz scoring and progress tracking are coming next.</div>
 {% endblock %}

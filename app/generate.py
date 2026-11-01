@@ -1,5 +1,6 @@
 import math
 import re
+import zlib
 
 from app.concepts import rank_concepts
 from app.text import split_sentences
@@ -7,6 +8,7 @@ from app.text import split_sentences
 BLANK = "_____"
 SUMMARY_SIZE = 4
 MIN_CARD_WORDS = 6
+QUIZ_OPTIONS = 4
 
 
 def term_pattern(term):
@@ -49,11 +51,58 @@ def cloze_cards(sentences, concepts):
     return cards
 
 
+def distractors(concept, concepts, count, seed):
+    others = [other["term"] for other in concepts if other["term"] != concept["term"]]
+    shift = seed % len(others)
+    others = others[shift:] + others[:shift]
+    size = len(concept["term"].split())
+    others.sort(key=lambda term: len(term.split()) != size)
+    return others[:count]
+
+
+def quiz_questions(sentences, concepts, cards):
+    card_sentences = {card["front"] for card in cards}
+    used = set()
+    questions = []
+    if len(concepts) < QUIZ_OPTIONS:
+        return questions
+    for concept in concepts:
+        pattern = term_pattern(concept["term"])
+        options = []
+        for index, sentence in enumerate(sentences):
+            match = pattern.search(sentence)
+            if not match or len(sentence.split()) < MIN_CARD_WORDS:
+                continue
+            blanked = with_period(pattern.sub(BLANK, sentence))
+            reused = index in used or blanked in card_sentences
+            options.append((reused, match.start() / len(sentence), index, blanked))
+        if not options:
+            continue
+        _, _, index, blanked = min(options)
+        used.add(index)
+        seed = zlib.crc32(blanked.encode())
+        choices = distractors(concept, concepts, QUIZ_OPTIONS - 1, seed)
+        answer = seed % QUIZ_OPTIONS
+        choices.insert(answer, concept["term"])
+        questions.append(
+            {
+                "question": f"Which term fills the blank? {blanked}",
+                "options": choices,
+                "answer": answer,
+                "explanation": with_period(sentences[index]),
+                "concept": concept["term"],
+            }
+        )
+    return questions
+
+
 def build_study_set(text):
     sentences = split_sentences(text)
     concepts = rank_concepts(text)
+    cards = cloze_cards(sentences, concepts)
     return {
         "summary": summarize(sentences, concepts),
         "concepts": concepts,
-        "flashcards": cloze_cards(sentences, concepts),
+        "flashcards": cards,
+        "quiz": quiz_questions(sentences, concepts, cards),
     }

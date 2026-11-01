@@ -40,4 +40,22 @@ def test_each_sentence_used_once():
 
 def test_empty_notes():
     study = build_study_set("")
-    assert study == {"summary": "", "concepts": [], "flashcards": []}
+    assert study == {"summary": "", "concepts": [], "flashcards": [], "quiz": []}
+
+
+def test_quiz_has_four_options_with_one_answer():
+    quiz = build_study_set(NOTES)["quiz"]
+    assert quiz
+    for question in quiz:
+        assert len(question["options"]) == 4
+        assert len(set(question["options"])) == 4
+        assert question["options"][question["answer"]] == question["concept"]
+        assert BLANK in question["question"]
+
+
+def test_quiz_is_stable_between_runs():
+    assert build_study_set(NOTES)["quiz"] == build_study_set(NOTES)["quiz"]
+
+
+def test_no_quiz_without_enough_concepts():
+    assert build_study_set("Stacks push and pop items. Stacks push items on top.")["quiz"] == []
