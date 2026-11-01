@@ -28,6 +28,7 @@ h1 { margin: 0; color: var(--ink); font-size: 34px; line-height: 1.15; letter-sp
 .button.ghost { background: #edf0f5; color: var(--text); }
 .cards { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 14px; margin: 22px 0 30px; }
 .card { background: var(--card); border: 1px solid var(--edge); border-radius: 17px; padding: 20px; box-shadow: 0 5px 18px #18283e0a; }
+.card + .card { margin-top: 14px; }
 .source-card { min-height: 178px; display: flex; flex-direction: column; }
 .eyebrow { display: inline-block; align-self: flex-start; border-radius: 8px; padding: 6px 8px; background: var(--purple-soft); color: var(--purple); font-size: 9px; font-weight: 900; letter-spacing: .08em; }
 .source-card h3, .card h3 { margin: 17px 0 4px; color: var(--ink); font-size: 16px; }
@@ -45,6 +46,7 @@ h1 { margin: 0; color: var(--ink); font-size: 34px; line-height: 1.15; letter-sp
 .tab { white-space: nowrap; padding: 10px 17px; border-radius: 9px; color: var(--muted); font-size: 13px; font-weight: 800; }
 .tab.active { color: var(--ink); background: white; box-shadow: 0 3px 10px #21354d0d; }
 .tag { display: inline-flex; align-items: center; border-radius: 999px; padding: 7px 11px; background: var(--mint); color: var(--green); font-size: 10px; font-weight: 800; letter-spacing: .05em; }
+.concept-tag { margin: 0 6px 6px 0; background: var(--purple-soft); color: var(--purple-dark); font-size: 12px; letter-spacing: 0; }
 .meta-row { display: flex; flex-wrap: wrap; gap: 7px; margin: -8px 0 18px; }
 .meta-row .tag { background: #e8ecf3; color: var(--muted); letter-spacing: 0; }
 .guide-grid { display: grid; grid-template-columns: minmax(0,1.55fr) minmax(270px,.85fr); gap: 16px; }

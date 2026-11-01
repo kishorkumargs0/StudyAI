@@ -9,6 +9,10 @@
   <span class="tag">{{ sentences|length }} sentences</span>
 </div>
 <div class="card">
+  <h3 style="margin-top:0">Key concepts</h3>
+  {% for concept in concepts %}<span class="tag concept-tag">{{ concept.term }}</span>{% else %}<p class="muted">Add more notes to find key concepts.</p>{% endfor %}
+</div>
+<div class="card">
   <h3 style="margin-top:0">Your notes</h3>
   <p class="summary" style="white-space:pre-line">{{ lecture.notes }}</p>
 </div>
