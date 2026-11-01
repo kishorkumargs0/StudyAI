@@ -8,10 +8,27 @@
   <span class="tag">{{ lecture.notes.split()|length }} words</span>
   <span class="tag">{{ sentences|length }} sentences</span>
 </div>
+{% if study.summary %}
+<div class="card">
+  <h3 style="margin-top:0">Summary</h3>
+  <p class="summary">{{ study.summary }}</p>
+</div>
+{% endif %}
 <div class="card">
   <h3 style="margin-top:0">Key concepts</h3>
-  {% for concept in concepts %}<span class="tag concept-tag">{{ concept.term }}</span>{% else %}<p class="muted">Add more notes to find key concepts.</p>{% endfor %}
+  {% for concept in study.concepts %}<span class="tag concept-tag">{{ concept.term }}</span>{% else %}<p class="muted">Add more notes to find key concepts.</p>{% endfor %}
 </div>
+{% if study.flashcards %}
+<div class="card">
+  <h3 style="margin-top:0">Flashcards</h3>
+  {% for card in study.flashcards %}
+  <details class="cloze">
+    <summary>{{ card.front }}</summary>
+    <p>{{ card.back }}</p>
+  </details>
+  {% endfor %}
+</div>
+{% endif %}
 <div class="card">
   <h3 style="margin-top:0">Your notes</h3>
   <p class="summary" style="white-space:pre-line">{{ lecture.notes }}</p>
@@ -22,5 +39,5 @@
     {% for sentence in sentences %}<li>{{ sentence }}</li>{% endfor %}
   </ol>
 </div>
-<div class="notice">Saved. Study guides, flashcards, and quizzes for your own notes are coming next.</div>
+<div class="notice">Practice quizzes for your own notes are coming next.</div>
 {% endblock %}

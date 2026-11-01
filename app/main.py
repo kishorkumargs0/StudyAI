@@ -9,7 +9,7 @@ from fastapi.templating import Jinja2Templates
 from starlette.exceptions import HTTPException
 
 from app import db
-from app.concepts import rank_concepts
+from app.generate import build_study_set
 from app.samples import LECTURES, find
 from app.text import split_sentences
 
@@ -76,7 +76,7 @@ def saved_notes(request: Request, lecture_id: int):
         "active": "library",
         "lecture": lecture,
         "sentences": split_sentences(lecture["notes"]),
-        "concepts": rank_concepts(lecture["notes"]),
+        "study": build_study_set(lecture["notes"]),
     }
     return templates.TemplateResponse(request, "notes.html", context)
 

@@ -47,6 +47,9 @@ h1 { margin: 0; color: var(--ink); font-size: 34px; line-height: 1.15; letter-sp
 .tab.active { color: var(--ink); background: white; box-shadow: 0 3px 10px #21354d0d; }
 .tag { display: inline-flex; align-items: center; border-radius: 999px; padding: 7px 11px; background: var(--mint); color: var(--green); font-size: 10px; font-weight: 800; letter-spacing: .05em; }
 .concept-tag { margin: 0 6px 6px 0; background: var(--purple-soft); color: var(--purple-dark); font-size: 12px; letter-spacing: 0; }
+.cloze { padding: 12px 14px; margin: 8px 0; border: 1px solid var(--edge); border-radius: 11px; line-height: 1.5; }
+.cloze summary { cursor: pointer; color: var(--ink); }
+.cloze p { margin: 8px 0 0; color: var(--purple-dark); font-weight: 800; }
 .meta-row { display: flex; flex-wrap: wrap; gap: 7px; margin: -8px 0 18px; }
 .meta-row .tag { background: #e8ecf3; color: var(--muted); letter-spacing: 0; }
 .guide-grid { display: grid; grid-template-columns: minmax(0,1.55fr) minmax(270px,.85fr); gap: 16px; }
