@@ -8,7 +8,8 @@
   <a class="tab {{ 'active' if mode == 'text' }}" href="/lectures/new?mode=text">Paste notes</a>
 </nav>
 {% if error %}<div class="notice" style="margin:0 0 14px;background:#fde8e3;color:#ae4436">{{ error }}</div>{% endif %}
-<form class="card" method="post" action="/lectures">
+<form class="card" method="post" action="/lectures" enctype="multipart/form-data">
+  <input type="hidden" name="mode" value="{{ mode }}">
   <div class="forms-grid">
     <div><label><b>Lecture title</b></label><input class="input" name="title" value="{{ form.title if form }}" placeholder="Week 5: Gradient descent" style="margin:8px 0 16px"></div>
     <div><label><b>Course</b></label><input class="input" name="course" value="{{ form.course if form }}" placeholder="CS 439" style="margin:8px 0 16px"></div>
@@ -18,15 +19,14 @@
   <textarea class="input" name="notes" placeholder="Paste your notes here..." style="margin:8px 0 16px">{{ form.notes if form }}</textarea>
   {% else %}
   <div class="filebox">
-    <p><b>PDF, TXT, Markdown, or audio (MP3, WAV, M4A)</b></p>
-    <input name="file" type="file" accept=".pdf,.txt,.md,.mp3,.wav,.m4a">
+    <p><b>PDF, TXT, or Markdown, up to 10 MB</b></p>
+    <input name="file" type="file" accept=".pdf,.txt,.md">
   </div>
   {% endif %}
   {% if mode == "text" %}
   <button class="button" type="submit">Save notes</button>
   {% else %}
-  <button class="button" type="button" disabled style="margin-top:16px">Upload</button>
-  <p class="disabled-note">File uploads aren't available yet. Paste your notes instead.</p>
+  <button class="button" type="submit" style="margin-top:16px">Upload</button>
   {% endif %}
 </form>
 {% endblock %}

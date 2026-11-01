@@ -4,7 +4,7 @@
 {% block subtitle %}{{ lecture.course }}{% endblock %}
 {% block content %}
 <div class="meta-row">
-  <span class="tag">pasted notes</span>
+  <span class="tag">{{ lecture.source }}</span>
   <span class="tag">{{ lecture.notes.split()|length }} words</span>
   <span class="tag">{{ sentences|length }} sentences</span>
 </div>

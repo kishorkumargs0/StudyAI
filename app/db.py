@@ -24,13 +24,18 @@ def init():
         )
         """
     )
+    columns = {row["name"] for row in conn.execute("PRAGMA table_info(lectures)")}
+    if "source" not in columns:
+        conn.execute("ALTER TABLE lectures ADD COLUMN source TEXT NOT NULL DEFAULT 'pasted notes'")
     conn.commit()
     conn.close()
 
 
-def add_lecture(title, course, notes):
+def add_lecture(title, course, notes, source="pasted notes"):
     conn = connect()
-    cursor = conn.execute("INSERT INTO lectures (title, course, notes) VALUES (?, ?, ?)", (title, course, notes))
+    cursor = conn.execute(
+        "INSERT INTO lectures (title, course, notes, source) VALUES (?, ?, ?, ?)", (title, course, notes, source)
+    )
     conn.commit()
     lecture_id = cursor.lastrowid
     conn.close()

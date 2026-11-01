@@ -1,7 +1,8 @@
 from datetime import datetime
 from pathlib import Path
+from typing import Annotated
 
-from fastapi import FastAPI, Form, Request
+from fastapi import FastAPI, File, Form, Request, UploadFile
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -12,6 +13,7 @@ from app import db
 from app.generate import build_study_set
 from app.samples import LECTURES, find
 from app.text import split_sentences
+from app.uploads import MAX_BYTES, UploadError, read_upload
 
 BASE = Path(__file__).parent
 
@@ -52,18 +54,36 @@ def new_lecture(request: Request, mode: str = "file"):
 
 
 @app.post("/lectures")
-def save_lecture(request: Request, title: str = Form(""), course: str = Form(""), notes: str = Form("")):
+async def save_lecture(
+    request: Request,
+    title: str = Form(""),
+    course: str = Form(""),
+    notes: str = Form(""),
+    mode: str = Form("text"),
+    file: Annotated[UploadFile | None, File()] = None,
+):
     title, course, notes = title.strip(), course.strip(), notes.strip()
+    mode = "file" if mode == "file" else "text"
+    source = "pasted notes"
     error = None
     if not title or not course:
         error = "Add a title and a course."
-    elif len(notes.split()) < MIN_WORDS:
-        error = f"Paste at least {MIN_WORDS} words of notes."
+    elif mode == "file":
+        if file is None or not file.filename:
+            error = "Choose a file to upload."
+        else:
+            try:
+                notes = read_upload(file.filename, await file.read(MAX_BYTES + 1))
+                source = file.filename
+            except UploadError as exc:
+                error = str(exc)
+    if not error and len(notes.split()) < MIN_WORDS:
+        error = f"The notes need at least {MIN_WORDS} words."
     if error:
-        form = {"title": title, "course": course, "notes": notes}
-        context = {"active": "library", "mode": "text", "error": error, "form": form}
+        form = {"title": title, "course": course, "notes": notes if mode == "text" else ""}
+        context = {"active": "library", "mode": mode, "error": error, "form": form}
         return templates.TemplateResponse(request, "new_lecture.html", context, status_code=400)
-    lecture_id = db.add_lecture(title, course, notes)
+    lecture_id = db.add_lecture(title, course, notes, source)
     return RedirectResponse(f"/notes/{lecture_id}", status_code=303)
 
 
