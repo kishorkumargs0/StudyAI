@@ -1,4 +1,4 @@
-from app.search import BM25, highlight, tokenize
+from app.search import BM25, analyze, highlight, stem, tokenize
 
 DOCS = [
     {"text": "The learning rate controls the size of each update."},
@@ -20,7 +20,7 @@ def test_finds_matching_sentence():
 
 def test_rare_words_count_more():
     index = BM25(DOCS)
-    assert index.idf["hash"] > index.idf["the"]
+    assert index.idf["hash"] > index.idf["learn"]
 
 
 def test_repeats_have_diminishing_returns():
@@ -42,7 +42,7 @@ def test_no_results_for_empty_or_unknown_query():
 
 
 def test_limit():
-    assert len(BM25(DOCS).search("the", limit=2)) == 2
+    assert len(BM25(DOCS).search("learning", limit=1)) == 1
 
 
 def test_empty_index():
@@ -53,3 +53,37 @@ def test_highlight_marks_query_words():
     parts = highlight("The learning rate.", "Rate")
     assert ("rate", True) in [(text.lower(), hit) for text, hit in parts]
     assert "".join(text for text, _ in parts) == "The learning rate."
+
+
+def test_stem_word_variants():
+    assert stem("learning") == stem("learned") == stem("learns") == stem("learn")
+    assert stem("controls") == stem("controlled") == stem("control")
+    assert stem("updates") == stem("updated") == stem("update")
+    assert stem("studies") == stem("study")
+    assert stem("class") == "class"
+    assert stem("string") == "string"
+
+
+def test_analyze_drops_stopwords():
+    assert analyze("What does the learning rate control?") == ["learn", "rate", "control"]
+
+
+def test_stemming_finds_reworded_question():
+    results = BM25(DOCS).search("what is the learning rate controlling")
+    assert results[0]["text"] == DOCS[0]["text"]
+
+
+def test_stopwords_alone_find_nothing():
+    assert BM25(DOCS).search("what is the") == []
+
+
+def test_plain_tokens_still_supported():
+    index = BM25(DOCS, analyzer=tokenize)
+    assert index.search("controlling") == []
+    assert BM25(DOCS).search("controlling")
+
+
+def test_highlight_uses_stems():
+    parts = highlight("The learning rate controls updates.", "control the rate")
+    marked = [text for text, hit in parts if hit]
+    assert marked == ["rate", "controls"]
