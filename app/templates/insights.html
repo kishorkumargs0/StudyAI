@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Insights{% endblock %}
+{% block heading %}Insights{% endblock %}
+{% block subtitle %}How your studying is going.{% endblock %}
+{% block content %}
+<section class="cards stats">
+  <div class="card"><span class="eyebrow">QUIZ ANSWERS</span><h3>{{ attempts }}</h3></div>
+  <div class="card"><span class="eyebrow">ACCURACY</span><h3>{{ "%d%%"|format(accuracy) if accuracy is not none else "-" }}</h3></div>
+  <div class="card"><span class="eyebrow">CARDS DUE TODAY</span><h3>{{ due_total }}</h3></div>
+</section>
+
+<div class="card">
+  <h3 style="margin-top:0">Weakest topics</h3>
+  {% for row in weak %}
+  <div class="stat-row">
+    <span><b>{{ row.concept }}</b> <span class="muted">{{ row.title }}</span></span>
+    <span class="weak">{{ (100 * row.accuracy)|round|int }}% of {{ row.attempts }}</span>
+  </div>
+  {% else %}
+  <p class="muted">{% if attempts %}Nothing under 75% right now.{% else %}Answer some quiz questions to see where you're struggling.{% endif %}</p>
+  {% endfor %}
+</div>
+
+<div class="card">
+  <h3 style="margin-top:0">Due for review</h3>
+  {% for row in due %}
+  <div class="stat-row">
+    <span><b>{{ row.lecture.title }}</b> <span class="muted">{{ row.lecture.course }}</span></span>
+    <a class="button soft" href="/notes/{{ row.lecture.id }}/review">Review {{ row.cards }}</a>
+  </div>
+  {% else %}
+  <p class="muted">No flashcards due. {{ reviews }} reviews done so far.</p>
+  {% endfor %}
+</div>
+
+{% if concepts %}
+<div class="card">
+  <h3 style="margin-top:0">Accuracy by concept</h3>
+  {% for row in concepts %}
+  <div class="stat-row">
+    <span><b>{{ row.concept }}</b> <span class="muted">{{ row.title }}</span></span>
+    <span class="{{ 'weak' if row.accuracy < 0.75 else 'strong' }}">{{ row.correct }}/{{ row.attempts }}</span>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

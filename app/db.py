@@ -137,3 +137,24 @@ def save_review(lecture_id, card, concept, state):
     )
     conn.commit()
     conn.close()
+
+
+def concept_accuracy():
+    conn = connect()
+    rows = conn.execute(
+        """
+        SELECT lectures.id AS lecture_id, lectures.title, quiz_attempts.concept,
+               COUNT(*) AS attempts, SUM(quiz_attempts.correct) AS correct
+        FROM quiz_attempts JOIN lectures ON lectures.id = quiz_attempts.lecture_id
+        GROUP BY lectures.id, quiz_attempts.concept
+        """
+    ).fetchall()
+    conn.close()
+    return [dict(row, accuracy=row["correct"] / row["attempts"]) for row in rows]
+
+
+def review_count():
+    conn = connect()
+    count = conn.execute("SELECT COUNT(*) FROM flashcard_reviews").fetchone()[0]
+    conn.close()
+    return count

@@ -24,6 +24,7 @@ templates = Jinja2Templates(directory=BASE / "templates")
 db.init()
 
 MIN_WORDS = 30
+WEAK_ACCURACY = 0.75
 
 
 def greeting():
@@ -46,6 +47,32 @@ def dashboard(request: Request):
 def library(request: Request):
     context = {"active": "library", "lectures": LECTURES, "saved": db.list_lectures()}
     return templates.TemplateResponse(request, "library.html", context)
+
+
+@app.get("/insights", response_class=HTMLResponse)
+def insights(request: Request):
+    concepts = db.concept_accuracy()
+    attempts = sum(row["attempts"] for row in concepts)
+    correct = sum(row["correct"] for row in concepts)
+    due = []
+    for lecture in db.list_lectures():
+        count = len(build_study_set(lecture["notes"])["flashcards"])
+        cards = len(due_cards(lecture["id"], count)[0])
+        if cards:
+            due.append({"lecture": lecture, "cards": cards})
+    weak = [row for row in concepts if row["accuracy"] < WEAK_ACCURACY]
+    weak.sort(key=lambda row: (row["accuracy"], -row["attempts"]))
+    context = {
+        "active": "insights",
+        "attempts": attempts,
+        "accuracy": round(100 * correct / attempts) if attempts else None,
+        "reviews": db.review_count(),
+        "due": due,
+        "due_total": sum(row["cards"] for row in due),
+        "weak": weak,
+        "concepts": sorted(concepts, key=lambda row: (row["title"], -row["accuracy"])),
+    }
+    return templates.TemplateResponse(request, "insights.html", context)
 
 
 @app.get("/lectures/new", response_class=HTMLResponse)
