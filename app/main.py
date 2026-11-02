@@ -11,6 +11,7 @@ from starlette.exceptions import HTTPException
 
 from app import db
 from app.generate import build_study_set
+from app.priority import rank_priorities
 from app.samples import LECTURES, find
 from app.sm2 import GRADES, new_card, review
 from app.text import split_sentences
@@ -25,6 +26,7 @@ db.init()
 
 MIN_WORDS = 30
 WEAK_ACCURACY = 0.75
+STUDY_NEXT = 5
 
 
 def greeting():
@@ -55,11 +57,15 @@ def insights(request: Request):
     attempts = sum(row["attempts"] for row in concepts)
     correct = sum(row["correct"] for row in concepts)
     due = []
+    priorities = []
     for lecture in db.list_lectures():
-        count = len(build_study_set(lecture["notes"])["flashcards"])
-        cards = len(due_cards(lecture["id"], count)[0])
+        study = build_study_set(lecture["notes"])
+        cards = len(due_cards(lecture["id"], len(study["flashcards"]))[0])
         if cards:
             due.append({"lecture": lecture, "cards": cards})
+        for row in lecture_priorities(lecture["id"], study):
+            priorities.append(dict(row, lecture=lecture))
+    priorities.sort(key=lambda row: -row["score"])
     weak = [row for row in concepts if row["accuracy"] < WEAK_ACCURACY]
     weak.sort(key=lambda row: (row["accuracy"], -row["attempts"]))
     context = {
@@ -70,6 +76,7 @@ def insights(request: Request):
         "due": due,
         "due_total": sum(row["cards"] for row in due),
         "weak": weak,
+        "priorities": priorities[:STUDY_NEXT],
         "concepts": sorted(concepts, key=lambda row: (row["title"], -row["accuracy"])),
     }
     return templates.TemplateResponse(request, "insights.html", context)
@@ -128,6 +135,7 @@ def saved_notes(request: Request, lecture_id: int, q: int = -1, pick: int = -1):
         "study": study,
         "progress": db.quiz_progress(lecture_id),
         "due": len(due_cards(lecture_id, len(study["flashcards"]))[0]),
+        "priorities": lecture_priorities(lecture_id, study)[:3],
         "answered": q,
         "pick": pick,
     }
@@ -148,6 +156,10 @@ def answer_question(request: Request, lecture_id: int, index: int, picked: int =
         context = {"lecture": lecture, "question": question, "index": index, "pick": picked}
         return templates.TemplateResponse(request, "quiz_question.html", context)
     return RedirectResponse(f"/notes/{lecture_id}?q={index}&pick={picked}#q{index}", status_code=303)
+
+
+def lecture_priorities(lecture_id, study):
+    return rank_priorities(study, db.concept_stats(lecture_id), db.card_states(lecture_id))
 
 
 def due_cards(lecture_id, count):

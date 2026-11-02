@@ -9,6 +9,18 @@
   <div class="card"><span class="eyebrow">CARDS DUE TODAY</span><h3>{{ due_total }}</h3></div>
 </section>
 
+{% if priorities %}
+<div class="card">
+  <h3 style="margin-top:0">Study next</h3>
+  {% for row in priorities %}
+  <div class="stat-row">
+    <span><b>{{ row.concept }}</b> <span class="muted">{{ row.lecture.title }}{% if row.reasons %} &nbsp;|&nbsp; {{ row.reasons|join(", ") }}{% endif %}</span></span>
+    <span class="priority">{{ row.score }}</span>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
 <div class="card">
   <h3 style="margin-top:0">Weakest topics</h3>
   {% for row in weak %}

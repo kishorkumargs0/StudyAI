@@ -82,6 +82,7 @@ div.option { cursor: default; }
 .stat-row:last-child { border-bottom: 0; }
 .weak { color: #ae4436; font-weight: 800; }
 .strong { color: var(--green); font-weight: 800; }
+.priority { min-width: 42px; padding: 6px 10px; border-radius: 999px; background: var(--purple-soft); color: var(--purple-dark); font-weight: 800; text-align: center; }
 .feedback { margin: 10px 0 6px; line-height: 1.5; }
 .quiz-item .action { color: var(--purple); font-size: 13px; font-weight: 800; text-decoration: none; }
 .input { width: 100%; padding: 12px 14px; border: 1px solid var(--edge); border-radius: 11px; background: white; color: var(--text); outline: none; }

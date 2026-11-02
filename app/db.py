@@ -158,3 +158,16 @@ def review_count():
     count = conn.execute("SELECT COUNT(*) FROM flashcard_reviews").fetchone()[0]
     conn.close()
     return count
+
+
+def concept_stats(lecture_id):
+    conn = connect()
+    rows = conn.execute(
+        """
+        SELECT concept, COUNT(*) AS attempts, SUM(correct) AS correct
+        FROM quiz_attempts WHERE lecture_id = ? GROUP BY concept
+        """,
+        (lecture_id,),
+    ).fetchall()
+    conn.close()
+    return {row["concept"]: (row["attempts"], row["correct"]) for row in rows}

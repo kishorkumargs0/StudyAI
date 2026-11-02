@@ -14,6 +14,17 @@
   <p class="summary">{{ study.summary }}</p>
 </div>
 {% endif %}
+{% if priorities %}
+<div class="card">
+  <h3 style="margin-top:0">Study next</h3>
+  {% for row in priorities %}
+  <div class="stat-row">
+    <span><b>{{ row.concept }}</b>{% if row.reasons %} <span class="muted">{{ row.reasons|join(", ") }}</span>{% endif %}</span>
+    <span class="priority">{{ row.score }}</span>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
 <div class="card">
   <h3 style="margin-top:0">Key concepts</h3>
   {% for concept in study.concepts %}<span class="tag concept-tag">{{ concept.term }}</span>{% else %}<p class="muted">Add more notes to find key concepts.</p>{% endfor %}
