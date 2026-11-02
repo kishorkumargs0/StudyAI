@@ -20,7 +20,7 @@
 </div>
 {% if study.flashcards %}
 <div class="card">
-  <h3 style="margin-top:0">Flashcards</h3>
+  <div class="section-title"><h3 style="margin:0">Flashcards</h3><a class="button" href="/notes/{{ lecture.id }}/review">Review{% if due %} ({{ due }} due){% endif %}</a></div>
   {% for card in study.flashcards %}
   <details class="cloze">
     <summary>{{ card.front }}</summary>
@@ -48,5 +48,5 @@
     {% for sentence in sentences %}<li>{{ sentence }}</li>{% endfor %}
   </ol>
 </div>
-<div class="notice">Flashcard scheduling and study insights are coming next.</div>
+<div class="notice">Study insights are coming next.</div>
 {% endblock %}

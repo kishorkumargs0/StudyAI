@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from pathlib import Path
 from typing import Annotated
 
@@ -12,6 +12,7 @@ from starlette.exceptions import HTTPException
 from app import db
 from app.generate import build_study_set
 from app.samples import LECTURES, find
+from app.sm2 import GRADES, new_card, review
 from app.text import split_sentences
 from app.uploads import MAX_BYTES, UploadError, read_upload
 
@@ -92,12 +93,14 @@ def saved_notes(request: Request, lecture_id: int, q: int = -1, pick: int = -1):
     lecture = db.get_lecture(lecture_id)
     if lecture is None:
         raise HTTPException(status_code=404)
+    study = build_study_set(lecture["notes"])
     context = {
         "active": "library",
         "lecture": lecture,
         "sentences": split_sentences(lecture["notes"]),
-        "study": build_study_set(lecture["notes"]),
+        "study": study,
         "progress": db.quiz_progress(lecture_id),
+        "due": len(due_cards(lecture_id, len(study["flashcards"]))[0]),
         "answered": q,
         "pick": pick,
     }
@@ -118,6 +121,45 @@ def answer_question(request: Request, lecture_id: int, index: int, picked: int =
         context = {"lecture": lecture, "question": question, "index": index, "pick": picked}
         return templates.TemplateResponse(request, "quiz_question.html", context)
     return RedirectResponse(f"/notes/{lecture_id}?q={index}&pick={picked}#q{index}", status_code=303)
+
+
+def due_cards(lecture_id, count):
+    states = db.card_states(lecture_id)
+    today = date.today().isoformat()
+    due = [card for card in range(count) if card not in states or states[card]["due"] <= today]
+    return due, states
+
+
+@app.get("/notes/{lecture_id}/review", response_class=HTMLResponse)
+def review_cards(request: Request, lecture_id: int, side: str = "front"):
+    lecture = db.get_lecture(lecture_id)
+    if lecture is None:
+        raise HTTPException(status_code=404)
+    cards = build_study_set(lecture["notes"])["flashcards"]
+    due, states = due_cards(lecture_id, len(cards))
+    context = {
+        "active": "library",
+        "lecture": lecture,
+        "due": len(due),
+        "index": due[0] if due else None,
+        "card": cards[due[0]] if due else None,
+        "side": "back" if side == "back" else "front",
+        "next_due": min((state["due"] for state in states.values()), default=None),
+    }
+    return templates.TemplateResponse(request, "review.html", context)
+
+
+@app.post("/notes/{lecture_id}/review/{index}")
+def grade_card(lecture_id: int, index: int, grade: str = Form("")):
+    lecture = db.get_lecture(lecture_id)
+    if lecture is None:
+        raise HTTPException(status_code=404)
+    cards = build_study_set(lecture["notes"])["flashcards"]
+    if not 0 <= index < len(cards) or grade not in GRADES:
+        raise HTTPException(status_code=400)
+    state = db.card_states(lecture_id).get(index) or new_card()
+    db.save_review(lecture_id, index, cards[index]["concept"], review(state, grade))
+    return RedirectResponse(f"/notes/{lecture_id}/review", status_code=303)
 
 
 @app.get("/lectures/{lecture_id}", response_class=HTMLResponse)

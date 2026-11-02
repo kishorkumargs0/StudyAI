@@ -37,6 +37,21 @@ def init():
         )
         """
     )
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS flashcard_reviews (
+            lecture_id INTEGER NOT NULL REFERENCES lectures(id),
+            card INTEGER NOT NULL,
+            concept TEXT NOT NULL,
+            repetitions INTEGER NOT NULL,
+            interval_days INTEGER NOT NULL,
+            ease REAL NOT NULL,
+            due TEXT NOT NULL,
+            reviewed_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (lecture_id, card)
+        )
+        """
+    )
     columns = {row["name"] for row in conn.execute("PRAGMA table_info(lectures)")}
     if "source" not in columns:
         conn.execute("ALTER TABLE lectures ADD COLUMN source TEXT NOT NULL DEFAULT 'pasted notes'")
@@ -87,3 +102,38 @@ def quiz_progress(lecture_id):
     ).fetchone()
     conn.close()
     return dict(row)
+
+
+def card_states(lecture_id):
+    conn = connect()
+    rows = conn.execute("SELECT * FROM flashcard_reviews WHERE lecture_id = ?", (lecture_id,)).fetchall()
+    conn.close()
+    return {
+        row["card"]: {
+            "repetitions": row["repetitions"],
+            "interval": row["interval_days"],
+            "ease": row["ease"],
+            "due": row["due"],
+        }
+        for row in rows
+    }
+
+
+def save_review(lecture_id, card, concept, state):
+    conn = connect()
+    conn.execute(
+        """
+        INSERT INTO flashcard_reviews (lecture_id, card, concept, repetitions, interval_days, ease, due)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT (lecture_id, card) DO UPDATE SET
+            concept = excluded.concept,
+            repetitions = excluded.repetitions,
+            interval_days = excluded.interval_days,
+            ease = excluded.ease,
+            due = excluded.due,
+            reviewed_at = CURRENT_TIMESTAMP
+        """,
+        (lecture_id, card, concept, state["repetitions"], state["interval"], state["ease"], state["due"]),
+    )
+    conn.commit()
+    conn.close()

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Review {{ lecture.title }}{% endblock %}
+{% block heading %}{{ lecture.title }}{% endblock %}
+{% block subtitle %}{{ lecture.course }} &nbsp;|&nbsp; flashcard review{% endblock %}
+{% block content %}
+{% if card %}
+<div class="center"><p class="subtitle">{{ due }} card{{ "s" if due != 1 }} due</p></div>
+<div class="flashcard"><div>
+  <span class="eyebrow">{{ "ANSWER" if side == "back" else "QUESTION" }}</span>
+  <h2>{{ card.front }}</h2>
+  {% if side == "back" %}<h2 class="answer">{{ card.back }}</h2>{% endif %}
+</div></div>
+{% if side == "back" %}
+<form class="controls" method="post" action="/notes/{{ lecture.id }}/review/{{ index }}">
+  {% for grade in ["again", "hard", "good", "easy"] %}
+  <button class="button {{ 'soft' if grade != 'good' }}" type="submit" name="grade" value="{{ grade }}">{{ grade|capitalize }}</button>
+  {% endfor %}
+</form>
+{% else %}
+<div class="controls"><a class="button" href="/notes/{{ lecture.id }}/review?side=back">Show answer</a></div>
+{% endif %}
+{% else %}
+<div class="card center">
+  <h3 style="margin-top:0">All caught up</h3>
+  <p class="muted">{% if next_due %}The next card is due {{ next_due }}.{% else %}These notes don't have flashcards yet.{% endif %}</p>
+  <a class="button soft" href="/notes/{{ lecture.id }}">Back to notes</a>
+</div>
+{% endif %}
+{% endblock %}
