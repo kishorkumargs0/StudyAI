@@ -13,6 +13,7 @@ from app import db
 from app.generate import build_study_set
 from app.priority import rank_priorities
 from app.samples import LECTURES, find
+from app.search import BM25, highlight
 from app.sm2 import GRADES, new_card, review
 from app.text import split_sentences
 from app.uploads import MAX_BYTES, UploadError, read_upload
@@ -80,6 +81,24 @@ def insights(request: Request):
         "concepts": sorted(concepts, key=lambda row: (row["title"], -row["accuracy"])),
     }
     return templates.TemplateResponse(request, "insights.html", context)
+
+
+@app.get("/search", response_class=HTMLResponse)
+def search(request: Request, q: str = ""):
+    q = q.strip()[:200]
+    results = []
+    if q:
+        documents = []
+        for lecture in db.list_lectures():
+            for sentence in split_sentences(lecture["notes"]):
+                documents.append({"text": sentence, "lecture": lecture})
+        results = BM25(documents).search(q)
+        for result in results:
+            result["parts"] = highlight(result["text"], q)
+    context = {"active": "search", "q": q, "results": results}
+    if request.headers.get("HX-Request"):
+        return templates.TemplateResponse(request, "search_results.html", context)
+    return templates.TemplateResponse(request, "search.html", context)
 
 
 @app.get("/lectures/new", response_class=HTMLResponse)

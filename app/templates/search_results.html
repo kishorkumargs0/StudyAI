@@ -1,0 +1,9 @@
+{% if q and not results %}
+<p class="muted">No matches for "{{ q }}".</p>
+{% endif %}
+{% for result in results %}
+<a class="result" href="/notes/{{ result.lecture.id }}">
+  <p>{% for text, hit in result.parts %}{% if hit %}<mark>{{ text }}</mark>{% else %}{{ text }}{% endif %}{% endfor %}</p>
+  <span class="muted">{{ result.lecture.title }} &nbsp;|&nbsp; {{ result.lecture.course }} &nbsp;|&nbsp; score {{ result.score }}</span>
+</a>
+{% endfor %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Search{% endblock %}
+{% block heading %}Search{% endblock %}
+{% block subtitle %}Find anything in your saved notes.{% endblock %}
+{% block content %}
+<form class="search-box" method="get" action="/search">
+  <input class="input" type="search" name="q" value="{{ q }}" placeholder="What does the learning rate do?" autofocus
+         hx-get="/search" hx-trigger="input changed delay:300ms, search" hx-target="#results">
+  <button class="button" type="submit">Search</button>
+</form>
+<div id="results">{% include "search_results.html" %}</div>
+{% endblock %}
