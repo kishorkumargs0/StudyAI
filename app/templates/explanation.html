@@ -1,0 +1,11 @@
+{% if text %}
+<p class="explanation">{{ text }} <span class="muted">Gemini, using your notes</span></p>
+{% elif error %}
+<p class="explain-error">{{ error }}</p>
+{% elif can_explain %}
+<form method="post" action="/notes/{{ lecture.id }}/explain" hx-post="/notes/{{ lecture.id }}/explain" hx-target="#explain-{{ index }}" hx-disabled-elt="find button">
+  <input type="hidden" name="concept" value="{{ concept }}">
+  <input type="hidden" name="index" value="{{ index }}">
+  <button class="button soft small" type="submit">Explain this</button>
+</form>
+{% endif %}

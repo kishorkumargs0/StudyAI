@@ -52,6 +52,17 @@ def init():
         )
         """
     )
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS explanations (
+            lecture_id INTEGER NOT NULL REFERENCES lectures(id),
+            concept TEXT NOT NULL,
+            text TEXT NOT NULL,
+            created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (lecture_id, concept)
+        )
+        """
+    )
     columns = {row["name"] for row in conn.execute("PRAGMA table_info(lectures)")}
     if "source" not in columns:
         conn.execute("ALTER TABLE lectures ADD COLUMN source TEXT NOT NULL DEFAULT 'pasted notes'")
@@ -171,3 +182,20 @@ def concept_stats(lecture_id):
     ).fetchall()
     conn.close()
     return {row["concept"]: (row["attempts"], row["correct"]) for row in rows}
+
+
+def get_explanations(lecture_id):
+    conn = connect()
+    rows = conn.execute("SELECT concept, text FROM explanations WHERE lecture_id = ?", (lecture_id,)).fetchall()
+    conn.close()
+    return {row["concept"]: row["text"] for row in rows}
+
+
+def save_explanation(lecture_id, concept, text):
+    conn = connect()
+    conn.execute(
+        "INSERT OR REPLACE INTO explanations (lecture_id, concept, text) VALUES (?, ?, ?)",
+        (lecture_id, concept, text),
+    )
+    conn.commit()
+    conn.close()

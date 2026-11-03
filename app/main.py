@@ -1,6 +1,7 @@
 from datetime import date, datetime
 from pathlib import Path
 from typing import Annotated
+from urllib.parse import quote
 
 from fastapi import FastAPI, File, Form, Request, UploadFile
 from fastapi.exceptions import RequestValidationError
@@ -9,7 +10,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.exceptions import HTTPException
 
-from app import db
+from app import db, explain
 from app.generate import build_study_set
 from app.priority import rank_priorities
 from app.samples import LECTURES, find
@@ -28,6 +29,7 @@ db.init()
 MIN_WORDS = 30
 WEAK_ACCURACY = 0.75
 STUDY_NEXT = 5
+EXPLAIN_TOP = 3
 
 
 def greeting():
@@ -142,7 +144,7 @@ async def save_lecture(
 
 
 @app.get("/notes/{lecture_id}", response_class=HTMLResponse)
-def saved_notes(request: Request, lecture_id: int, q: int = -1, pick: int = -1):
+def saved_notes(request: Request, lecture_id: int, q: int = -1, pick: int = -1, explain_error: str = ""):
     lecture = db.get_lecture(lecture_id)
     if lecture is None:
         raise HTTPException(status_code=404)
@@ -154,7 +156,10 @@ def saved_notes(request: Request, lecture_id: int, q: int = -1, pick: int = -1):
         "study": study,
         "progress": db.quiz_progress(lecture_id),
         "due": len(due_cards(lecture_id, len(study["flashcards"]))[0]),
-        "priorities": lecture_priorities(lecture_id, study)[:3],
+        "priorities": lecture_priorities(lecture_id, study)[:EXPLAIN_TOP],
+        "explanations": db.get_explanations(lecture_id),
+        "can_explain": explain.available(),
+        "explain_error": explain_error,
         "answered": q,
         "pick": pick,
     }
@@ -175,6 +180,30 @@ def answer_question(request: Request, lecture_id: int, index: int, picked: int =
         context = {"lecture": lecture, "question": question, "index": index, "pick": picked}
         return templates.TemplateResponse(request, "quiz_question.html", context)
     return RedirectResponse(f"/notes/{lecture_id}?q={index}&pick={picked}#q{index}", status_code=303)
+
+
+@app.post("/notes/{lecture_id}/explain")
+def explain_concept(request: Request, lecture_id: int, concept: str = Form(""), index: int = Form(0)):
+    lecture = db.get_lecture(lecture_id)
+    if lecture is None:
+        raise HTTPException(status_code=404)
+    study = build_study_set(lecture["notes"])
+    top = [row["concept"] for row in lecture_priorities(lecture_id, study)[:EXPLAIN_TOP]]
+    if concept not in top:
+        raise HTTPException(status_code=400)
+    text = db.get_explanations(lecture_id).get(concept)
+    error = None
+    if text is None:
+        try:
+            text = explain.explain(concept, split_sentences(lecture["notes"]))
+            db.save_explanation(lecture_id, concept, text)
+        except explain.ExplainError as exc:
+            error = str(exc)
+    if request.headers.get("HX-Request"):
+        context = {"lecture": lecture, "concept": concept, "index": index, "text": text, "error": error}
+        return templates.TemplateResponse(request, "explanation.html", context)
+    query = f"?explain_error={quote(error)}" if error else ""
+    return RedirectResponse(f"/notes/{lecture_id}{query}#study-next", status_code=303)
 
 
 def lecture_priorities(lecture_id, study):

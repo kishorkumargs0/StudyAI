@@ -15,14 +15,19 @@
 </div>
 {% endif %}
 {% if priorities %}
-<div class="card">
+<div class="card" id="study-next">
   <h3 style="margin-top:0">Study next</h3>
+  {% if explain_error %}<p class="explain-error">{{ explain_error }}</p>{% endif %}
   {% for row in priorities %}
   <div class="stat-row">
     <span><b>{{ row.concept }}</b>{% if row.reasons %} <span class="muted">{{ row.reasons|join(", ") }}</span>{% endif %}</span>
     <span class="priority">{{ row.score }}</span>
   </div>
+  <div class="explain-slot" id="explain-{{ loop.index0 }}">
+    {% with concept=row.concept, index=loop.index0, text=explanations.get(row.concept), error=None %}{% include "explanation.html" %}{% endwith %}
+  </div>
   {% endfor %}
+  {% if not can_explain %}<p class="muted">Add a GEMINI_API_KEY to a .env file to get short explanations of these.</p>{% endif %}
 </div>
 {% endif %}
 <div class="card">

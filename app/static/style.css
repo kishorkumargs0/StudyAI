@@ -83,6 +83,12 @@ div.option { cursor: default; }
 .weak { color: #ae4436; font-weight: 800; }
 .strong { color: var(--green); font-weight: 800; }
 .priority { min-width: 42px; padding: 6px 10px; border-radius: 999px; background: var(--purple-soft); color: var(--purple-dark); font-weight: 800; text-align: center; }
+.explain-slot { padding-bottom: 6px; border-bottom: 1px solid var(--edge); }
+#study-next .stat-row { border-bottom: 0; padding-bottom: 4px; }
+.explanation { margin: 0 0 8px; padding: 12px 14px; border-radius: 11px; background: var(--purple-soft); color: var(--text); line-height: 1.55; }
+.explanation .muted { display: block; margin-top: 4px; font-size: 11px; }
+.explain-error { margin: 0 0 8px; color: #ae4436; font-size: 13px; }
+.button.small { padding: 7px 11px; font-size: 12px; }
 .search-box { display: flex; gap: 10px; margin-bottom: 18px; }
 .result { display: block; margin: 8px 0; padding: 14px 16px; background: white; border: 1px solid var(--edge); border-radius: 14px; color: var(--text); text-decoration: none; }
 .result:hover { border-color: var(--purple); }
