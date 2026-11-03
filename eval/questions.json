@@ -1,0 +1,266 @@
+{
+  "lectures": [
+    {
+      "id": "neural_networks",
+      "title": "Neural Networks: Forward and Backpropagation",
+      "file": "lectures/neural_networks.txt"
+    },
+    {
+      "id": "supply_demand",
+      "title": "Supply and Demand",
+      "file": "lectures/supply_demand.txt"
+    },
+    {
+      "id": "photosynthesis",
+      "title": "Photosynthesis",
+      "file": "lectures/photosynthesis.txt"
+    },
+    {
+      "id": "hash_tables",
+      "title": "Hash Tables",
+      "file": "lectures/hash_tables.txt"
+    }
+  ],
+  "questions": [
+    {
+      "lecture": "neural_networks",
+      "question": "What does the learning rate control?",
+      "answer": "learning rate controls the size",
+      "type": "exact"
+    },
+    {
+      "lecture": "neural_networks",
+      "question": "What is overfitting?",
+      "answer": "Overfitting occurs when",
+      "type": "exact"
+    },
+    {
+      "lecture": "neural_networks",
+      "question": "What does a loss function measure?",
+      "answer": "which measures the difference",
+      "type": "exact"
+    },
+    {
+      "lecture": "neural_networks",
+      "question": "Why are activation functions like ReLU needed?",
+      "answer": "Activation functions such as ReLU",
+      "type": "exact"
+    },
+    {
+      "lecture": "neural_networks",
+      "question": "How does the model figure out which parameters caused the error?",
+      "answer": "chain rule",
+      "type": "reworded"
+    },
+    {
+      "lecture": "neural_networks",
+      "question": "What goes wrong if the step size is too big?",
+      "answer": "too large can skip",
+      "type": "reworded"
+    },
+    {
+      "lecture": "neural_networks",
+      "question": "What happens when a model just memorizes the examples it saw?",
+      "answer": "Overfitting occurs",
+      "type": "reworded"
+    },
+    {
+      "lecture": "neural_networks",
+      "question": "Why would a deep network with no nonlinearity be pointless?",
+      "answer": "behave like a single linear model",
+      "type": "reworded"
+    },
+    {
+      "lecture": "neural_networks",
+      "question": "How are the parameters nudged to make errors smaller?",
+      "answer": "Gradient descent then adjusts",
+      "type": "reworded"
+    },
+    {
+      "lecture": "neural_networks",
+      "question": "Which techniques help a model generalize to new data?",
+      "answer": "early stopping",
+      "type": "reworded"
+    },
+    {
+      "lecture": "supply_demand",
+      "question": "What is market equilibrium?",
+      "answer": "Market equilibrium occurs",
+      "type": "exact"
+    },
+    {
+      "lecture": "supply_demand",
+      "question": "What does a price ceiling create?",
+      "answer": "price ceiling set below",
+      "type": "exact"
+    },
+    {
+      "lecture": "supply_demand",
+      "question": "What does price elasticity of demand measure?",
+      "answer": "Price elasticity of demand measures",
+      "type": "exact"
+    },
+    {
+      "lecture": "supply_demand",
+      "question": "What is the law of demand?",
+      "answer": "law of demand",
+      "type": "exact"
+    },
+    {
+      "lecture": "supply_demand",
+      "question": "Why do people keep buying medicine even when it gets expensive?",
+      "answer": "inelastic demand",
+      "type": "reworded"
+    },
+    {
+      "lecture": "supply_demand",
+      "question": "What happens to sales of cheap goods when people earn more money?",
+      "answer": "inferior goods",
+      "type": "reworded"
+    },
+    {
+      "lecture": "supply_demand",
+      "question": "What is an example of the government setting a maximum price?",
+      "answer": "Rent control",
+      "type": "reworded"
+    },
+    {
+      "lecture": "supply_demand",
+      "question": "How does taxing companies affect what things cost?",
+      "answer": "tax on producers",
+      "type": "reworded"
+    },
+    {
+      "lecture": "supply_demand",
+      "question": "Where do buyers and sellers agree on the amount traded?",
+      "answer": "quantity supplied equals quantity demanded",
+      "type": "reworded"
+    },
+    {
+      "lecture": "supply_demand",
+      "question": "Why are products with lots of alternatives price sensitive?",
+      "answer": "many substitutes",
+      "type": "reworded"
+    },
+    {
+      "lecture": "photosynthesis",
+      "question": "What does the Calvin cycle do?",
+      "answer": "Calvin cycle uses ATP",
+      "type": "exact"
+    },
+    {
+      "lecture": "photosynthesis",
+      "question": "Where do the light-dependent reactions occur?",
+      "answer": "thylakoid membranes",
+      "type": "exact"
+    },
+    {
+      "lecture": "photosynthesis",
+      "question": "What is rubisco?",
+      "answer": "Rubisco is the enzyme",
+      "type": "exact"
+    },
+    {
+      "lecture": "photosynthesis",
+      "question": "What are stomata?",
+      "answer": "Stomata are small pores",
+      "type": "exact"
+    },
+    {
+      "lecture": "photosynthesis",
+      "question": "Why do leaves look green?",
+      "answer": "reflects green light",
+      "type": "reworded"
+    },
+    {
+      "lecture": "photosynthesis",
+      "question": "Where does the oxygen plants give off come from?",
+      "answer": "releases oxygen",
+      "type": "reworded"
+    },
+    {
+      "lecture": "photosynthesis",
+      "question": "Why do plants make less sugar during a heat wave?",
+      "answer": "close their stomata",
+      "type": "reworded"
+    },
+    {
+      "lecture": "photosynthesis",
+      "question": "Which part of the cell turns sunlight into food?",
+      "answer": "chloroplasts",
+      "type": "reworded"
+    },
+    {
+      "lecture": "photosynthesis",
+      "question": "How have desert plants evolved to survive?",
+      "answer": "C4 and CAM",
+      "type": "reworded"
+    },
+    {
+      "lecture": "photosynthesis",
+      "question": "Does more sunlight always mean faster sugar production?",
+      "answer": "until another factor becomes limiting",
+      "type": "reworded"
+    },
+    {
+      "lecture": "hash_tables",
+      "question": "What is a collision?",
+      "answer": "A collision happens",
+      "type": "exact"
+    },
+    {
+      "lecture": "hash_tables",
+      "question": "What is the load factor?",
+      "answer": "load factor is the number",
+      "type": "exact"
+    },
+    {
+      "lecture": "hash_tables",
+      "question": "How does separate chaining work?",
+      "answer": "Separate chaining handles",
+      "type": "exact"
+    },
+    {
+      "lecture": "hash_tables",
+      "question": "What does a hash function do?",
+      "answer": "hash function maps each key",
+      "type": "exact"
+    },
+    {
+      "lecture": "hash_tables",
+      "question": "Why is adding an item still fast on average even though growing the table is slow?",
+      "answer": "amortized cost",
+      "type": "reworded"
+    },
+    {
+      "lecture": "hash_tables",
+      "question": "What is the slowest a search can get?",
+      "answer": "degrades to linear time",
+      "type": "reworded"
+    },
+    {
+      "lecture": "hash_tables",
+      "question": "What problem does checking the very next spot cause?",
+      "answer": "long clusters",
+      "type": "reworded"
+    },
+    {
+      "lecture": "hash_tables",
+      "question": "What happens when the structure gets too full?",
+      "answer": "resized and every entry is rehashed",
+      "type": "reworded"
+    },
+    {
+      "lecture": "hash_tables",
+      "question": "Which built-in Python type uses this structure?",
+      "answer": "Python dictionaries",
+      "type": "reworded"
+    },
+    {
+      "lecture": "hash_tables",
+      "question": "What makes a mapping from keys to slots good?",
+      "answer": "spreads keys uniformly",
+      "type": "reworded"
+    }
+  ]
+}

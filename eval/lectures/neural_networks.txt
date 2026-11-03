@@ -1,0 +1,20 @@
+A neural network is a computational model built from connected layers of simple
+processing units called neurons. The input layer receives features, hidden
+layers transform those features, and the output layer produces a prediction.
+Each connection carries a weight, while each neuron may also include a bias.
+
+During a forward pass, the network multiplies inputs by their weights, adds a
+bias, and applies an activation function. Activation functions such as ReLU
+allow the network to model nonlinear relationships. Without nonlinear
+activations, stacking many layers would behave like a single linear model.
+
+Training aims to reduce a loss function, which measures the difference between
+the model's prediction and the correct target. Backpropagation applies the
+chain rule to calculate how much each weight contributed to the loss. Gradient
+descent then adjusts those weights in the direction that lowers the loss.
+
+The learning rate controls the size of each update. A learning rate that is too
+large can skip over a useful solution, while one that is too small can make
+training unnecessarily slow. Overfitting occurs when a model memorizes its
+training examples and performs poorly on unseen data. Validation data,
+regularization, and early stopping can help detect or reduce overfitting.
