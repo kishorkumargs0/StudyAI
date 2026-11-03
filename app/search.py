@@ -43,7 +43,7 @@ def stem(word):
 
 
 def analyze(text):
-    return [stem(word) for word in tokenize(text) if word not in STOPWORDS]
+    return [stem(word) for word in tokenize(text)]
 
 
 class BM25:

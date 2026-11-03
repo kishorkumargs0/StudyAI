@@ -6,15 +6,15 @@
 <section class="hero">
   <div>
     <h2>Build a study set</h2>
-    <p>Add a lecture recording, a document, or your notes and get a study guide, flashcards, and a practice quiz.</p>
+    <p>Add a document or paste your notes and get a study guide, flashcards, and a practice quiz.</p>
   </div>
   <a class="button light" href="/lectures/{{ lectures[0].id }}">Open a sample</a>
 </section>
 <section class="cards">
-  <a class="card source-card" href="/lectures/new?mode=file"><span class="eyebrow">AUDIO</span><h3>Upload a recording</h3><p>MP3, WAV, or M4A.</p><span class="action">Choose file →</span></a>
   <a class="card source-card" href="/lectures/new?mode=file"><span class="eyebrow">DOC</span><h3>Upload a document</h3><p>PDF, TXT, or Markdown.</p><span class="action">Choose file →</span></a>
   <a class="card source-card" href="/lectures/new?mode=text"><span class="eyebrow">TEXT</span><h3>Paste lecture notes</h3><p>Bullet points work too.</p><span class="action">Paste notes →</span></a>
+  <a class="card source-card" href="/insights"><span class="eyebrow">REVIEW</span><h3>See what to study next</h3><p>Due flashcards and weak topics.</p><span class="action">Open insights →</span></a>
 </section>
 <div class="section-title"><h2>Recent lectures</h2><a class="action" href="/library">View library →</a></div>
-{% include "lecture_rows.html" %}
+{% if saved %}{% include "saved_rows.html" %}{% else %}{% include "lecture_rows.html" %}{% endif %}
 {% endblock %}

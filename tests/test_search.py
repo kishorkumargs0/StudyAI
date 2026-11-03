@@ -64,8 +64,13 @@ def test_stem_word_variants():
     assert stem("string") == "string"
 
 
-def test_analyze_drops_stopwords():
-    assert analyze("What does the learning rate control?") == ["learn", "rate", "control"]
+def test_analyze_stems_every_word():
+    assert analyze("What does the learning rate control?") == ["what", "doe", "the", "learn", "rate", "control"]
+
+
+def test_common_words_barely_count():
+    index = BM25(DOCS)
+    assert index.idf["the"] < index.idf["learn"] < index.idf["hash"]
 
 
 def test_stemming_finds_reworded_question():
@@ -73,8 +78,9 @@ def test_stemming_finds_reworded_question():
     assert results[0]["text"] == DOCS[0]["text"]
 
 
-def test_stopwords_alone_find_nothing():
-    assert BM25(DOCS).search("what is the") == []
+def test_content_words_beat_filler_words():
+    results = BM25(DOCS).search("what is the hash table")
+    assert results[0]["text"] == DOCS[2]["text"]
 
 
 def test_plain_tokens_still_supported():

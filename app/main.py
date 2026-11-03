@@ -14,7 +14,7 @@ from app import db, explain
 from app.generate import build_study_set
 from app.priority import rank_priorities
 from app.samples import LECTURES, find
-from app.search import BM25, highlight
+from app.search import BM25, STOPWORDS, highlight, tokenize
 from app.sm2 import GRADES, new_card, review
 from app.text import split_sentences
 from app.uploads import MAX_BYTES, UploadError, read_upload
@@ -30,6 +30,7 @@ MIN_WORDS = 30
 WEAK_ACCURACY = 0.75
 STUDY_NEXT = 5
 EXPLAIN_TOP = 3
+MIN_RELATIVE_SCORE = 0.3
 
 
 def greeting():
@@ -43,9 +44,8 @@ def greeting():
 
 @app.get("/", response_class=HTMLResponse)
 def dashboard(request: Request):
-    return templates.TemplateResponse(
-        request, "dashboard.html", {"active": "dashboard", "greeting": greeting(), "lectures": LECTURES}
-    )
+    context = {"active": "dashboard", "greeting": greeting(), "lectures": LECTURES, "saved": db.list_lectures()[:3]}
+    return templates.TemplateResponse(request, "dashboard.html", context)
 
 
 @app.get("/library", response_class=HTMLResponse)
@@ -89,12 +89,14 @@ def insights(request: Request):
 def search(request: Request, q: str = ""):
     q = q.strip()[:200]
     results = []
-    if q:
+    if any(word not in STOPWORDS for word in tokenize(q)):
         documents = []
         for lecture in db.list_lectures():
             for sentence in split_sentences(lecture["notes"]):
                 documents.append({"text": sentence, "lecture": lecture})
         results = BM25(documents).search(q)
+        if results:
+            results = [result for result in results if result["score"] >= MIN_RELATIVE_SCORE * results[0]["score"]]
         for result in results:
             result["parts"] = highlight(result["text"], q)
     context = {"active": "search", "q": q, "results": results}

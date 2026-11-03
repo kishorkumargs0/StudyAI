@@ -1,0 +1,10 @@
+{% for lecture in saved %}
+<div class="lecture-row">
+  <div class="source-icon">{{ lecture.source.rsplit(".", 1)[1]|upper if "." in lecture.source else "TEXT" }}</div>
+  <div>
+    <div class="lecture-title">{{ lecture.title }}</div>
+    <div class="lecture-meta">{{ lecture.course }} &nbsp;|&nbsp; {{ lecture.notes.split()|length }} words &nbsp;|&nbsp; added {{ lecture.created_at[:10] }}</div>
+  </div>
+  <a class="button soft" href="/notes/{{ lecture.id }}">Open</a>
+</div>
+{% endfor %}

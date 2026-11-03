@@ -27,15 +27,15 @@ def bm25(analyzer=None):
     return run
 
 
-def stemmed(text):
-    return [stem(word) for word in tokenize(text)]
+def without_stopwords(text):
+    return [stem(word) for word in tokenize(text) if word not in STOPWORDS]
 
 
 METHODS = {
     "Keyword count": keyword_count,
     "BM25": bm25(tokenize),
-    "BM25 + stemming": bm25(stemmed),
-    "BM25 + stemming + stopwords": bm25(),
+    "BM25 + stemming": bm25(),
+    "BM25 + stemming + stopwords": bm25(without_stopwords),
 }
 
 

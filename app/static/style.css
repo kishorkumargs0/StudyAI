@@ -29,6 +29,7 @@ h1 { margin: 0; color: var(--ink); font-size: 34px; line-height: 1.15; letter-sp
 .cards { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 14px; margin: 22px 0 30px; }
 .card { background: var(--card); border: 1px solid var(--edge); border-radius: 17px; padding: 20px; box-shadow: 0 5px 18px #18283e0a; }
 .card + .card { margin-top: 14px; }
+.cards .card { margin-top: 0; }
 .source-card { min-height: 178px; display: flex; flex-direction: column; }
 .eyebrow { display: inline-block; align-self: flex-start; border-radius: 8px; padding: 6px 8px; background: var(--purple-soft); color: var(--purple); font-size: 9px; font-weight: 900; letter-spacing: .08em; }
 .source-card h3, .card h3 { margin: 17px 0 4px; color: var(--ink); font-size: 16px; }
@@ -76,7 +77,6 @@ button.option { font: inherit; }
 a.option:hover, button.option:hover { border-color: var(--purple); }
 div.option { cursor: default; }
 .stats { margin-top: 0; }
-.stats .card { margin-top: 0; }
 .stats h3 { margin: 8px 0 0; font-size: 28px; }
 .stat-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--edge); }
 .stat-row:last-child { border-bottom: 0; }
