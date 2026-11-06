@@ -68,3 +68,17 @@ def test_drops_short_fragments():
 def test_empty_text():
     assert split_sentences("") == []
     assert split_sentences("   \n\n  ") == []
+
+
+def test_pdf_bullet_symbols_and_headings():
+    text = "Week 7 Trees\nWhat a BST is\n\x7f\nA binary search tree stores keys in order.\n\x7f\nEvery key on the left\nis smaller than the node.\nTraversals\n\u25cf Inorder visits keys in sorted order."
+    assert split_sentences(text) == [
+        "A binary search tree stores keys in order.",
+        "Every key on the left is smaller than the node.",
+        "Inorder visits keys in sorted order.",
+    ]
+
+
+def test_one_fact_per_line_without_periods():
+    text = "Gradient descent lowers the loss\nLearning rate sets the step size\nSmall rates make training slow"
+    assert len(split_sentences(text)) == 3

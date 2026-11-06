@@ -8,7 +8,7 @@ The study material is generated from your notes with plain Python. Gemini is opt
 
 No coding needed. Go to the [latest release](https://github.com/kishorkumargs0/StudyAI/releases/latest) and download the file for your computer.
 
-**Mac (Apple Silicon)**: download `StudyAI-mac.zip`, double-click it, and drag StudyAI into Applications. The first time you open it, macOS will say it can't verify the developer. Open System Settings, go to Privacy & Security, scroll down, and click Open Anyway.
+**Mac (Apple Silicon)**: download `StudyAI-mac.dmg`, double-click it, and drag StudyAI into the Applications folder in the window that opens. The first time you open it, macOS will say it can't verify the developer. Open System Settings, go to Privacy & Security, scroll down, and click Open Anyway.
 
 **Windows**: download `StudyAI-windows.zip`, unzip it, and double-click `StudyAI.exe`. If Windows shows "Windows protected your PC", click More info, then Run anyway.
 
