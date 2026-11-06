@@ -89,6 +89,8 @@ div.option { cursor: default; }
 .explanation .muted { display: block; margin-top: 4px; font-size: 11px; }
 .explain-error { margin: 0 0 8px; color: #ae4436; font-size: 13px; }
 .button.small { padding: 7px 11px; font-size: 12px; }
+.steps { margin: 0 0 14px; padding-left: 20px; line-height: 1.8; }
+code { padding: 3px 7px; border-radius: 6px; background: #edf0f5; font-size: 13px; word-break: break-all; }
 .search-box { display: flex; gap: 10px; margin-bottom: 18px; }
 .result { display: block; margin: 8px 0; padding: 14px 16px; background: white; border: 1px solid var(--edge); border-radius: 14px; color: var(--text); text-decoration: none; }
 .result:hover { border-color: var(--purple); }

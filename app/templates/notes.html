@@ -27,7 +27,7 @@
     {% with concept=row.concept, index=loop.index0, text=explanations.get(row.concept), error=None %}{% include "explanation.html" %}{% endwith %}
   </div>
   {% endfor %}
-  {% if not can_explain %}<p class="muted">Add a GEMINI_API_KEY to a .env file to get short explanations of these.</p>{% endif %}
+  {% if not can_explain %}<p class="muted"><a href="/settings">Add a Gemini key in Settings</a> to get short explanations of these.</p>{% endif %}
 </div>
 {% endif %}
 <div class="card">

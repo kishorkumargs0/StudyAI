@@ -105,6 +105,35 @@ def search(request: Request, q: str = ""):
     return templates.TemplateResponse(request, "search.html", context)
 
 
+@app.get("/settings", response_class=HTMLResponse)
+def settings(request: Request, saved: str = "", error: str = ""):
+    key = explain.api_key()
+    context = {
+        "active": "settings",
+        "source": explain.key_source(),
+        "ending": key[-4:] if key else "",
+        "data_dir": db.data_dir(),
+        "saved": saved,
+        "error": error,
+    }
+    return templates.TemplateResponse(request, "settings.html", context)
+
+
+@app.post("/settings/gemini")
+def save_gemini_key(key: str = Form("")):
+    key = key.strip()
+    if len(key) < 20 or any(char.isspace() for char in key):
+        return RedirectResponse("/settings?error=1", status_code=303)
+    db.set_setting("gemini_api_key", key)
+    return RedirectResponse("/settings?saved=1", status_code=303)
+
+
+@app.post("/settings/gemini/remove")
+def remove_gemini_key():
+    db.delete_setting("gemini_api_key")
+    return RedirectResponse("/settings?saved=removed", status_code=303)
+
+
 @app.get("/lectures/new", response_class=HTMLResponse)
 def new_lecture(request: Request, mode: str = "file"):
     mode = "text" if mode == "text" else "file"

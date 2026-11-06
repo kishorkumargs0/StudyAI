@@ -4,13 +4,15 @@ from pathlib import Path
 
 from platformdirs import user_data_dir
 
-DATA_DIR = Path(os.environ.get("STUDYAI_DATA") or user_data_dir("StudyAI", appauthor=False))
-DB_PATH = DATA_DIR / "studyai.db"
+
+def data_dir():
+    return Path(os.environ.get("STUDYAI_DATA") or user_data_dir("StudyAI", appauthor=False))
 
 
 def connect():
-    DB_PATH.parent.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(DB_PATH)
+    folder = data_dir()
+    folder.mkdir(parents=True, exist_ok=True)
+    conn = sqlite3.connect(folder / "studyai.db")
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -67,6 +69,7 @@ def init():
         )
         """
     )
+    conn.execute("CREATE TABLE IF NOT EXISTS settings (name TEXT PRIMARY KEY, value TEXT NOT NULL)")
     columns = {row["name"] for row in conn.execute("PRAGMA table_info(lectures)")}
     if "source" not in columns:
         conn.execute("ALTER TABLE lectures ADD COLUMN source TEXT NOT NULL DEFAULT 'pasted notes'")
@@ -201,5 +204,26 @@ def save_explanation(lecture_id, concept, text):
         "INSERT OR REPLACE INTO explanations (lecture_id, concept, text) VALUES (?, ?, ?)",
         (lecture_id, concept, text),
     )
+    conn.commit()
+    conn.close()
+
+
+def get_setting(name):
+    conn = connect()
+    row = conn.execute("SELECT value FROM settings WHERE name = ?", (name,)).fetchone()
+    conn.close()
+    return row["value"] if row else None
+
+
+def set_setting(name, value):
+    conn = connect()
+    conn.execute("INSERT OR REPLACE INTO settings (name, value) VALUES (?, ?)", (name, value))
+    conn.commit()
+    conn.close()
+
+
+def delete_setting(name):
+    conn = connect()
+    conn.execute("DELETE FROM settings WHERE name = ?", (name,))
     conn.commit()
     conn.close()

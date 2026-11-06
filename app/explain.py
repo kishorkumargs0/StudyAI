@@ -2,6 +2,7 @@ import os
 
 from dotenv import load_dotenv
 
+from app import db
 from app.generate import term_pattern
 
 load_dotenv()
@@ -22,7 +23,13 @@ class ExplainError(Exception):
 
 
 def api_key():
-    return os.environ.get("GEMINI_API_KEY", "").strip()
+    return (os.environ.get("GEMINI_API_KEY") or db.get_setting("gemini_api_key") or "").strip()
+
+
+def key_source():
+    if os.environ.get("GEMINI_API_KEY"):
+        return "env"
+    return "settings" if db.get_setting("gemini_api_key") else None
 
 
 def available():
@@ -41,7 +48,7 @@ def build_prompt(concept, sentences):
 
 def explain(concept, sentences):
     if not available():
-        raise ExplainError("Add a GEMINI_API_KEY to use explanations.")
+        raise ExplainError("Add a Gemini key in Settings to use explanations.")
     if not relevant_sentences(concept, sentences):
         raise ExplainError("Your notes don't say enough about this to explain it.")
     from google import genai
@@ -60,7 +67,7 @@ def explain(concept, sentences):
             if exc.code == 429:
                 message = "Gemini is rate limiting requests. Wait a minute and try again."
             elif exc.code in (400, 401, 403):
-                raise ExplainError("Gemini rejected the API key. Check GEMINI_API_KEY in your .env.") from exc
+                raise ExplainError("Gemini rejected the API key. Check it in Settings.") from exc
             continue
         except Exception:
             continue

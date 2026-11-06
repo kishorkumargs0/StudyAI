@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Settings{% endblock %}
+{% block heading %}Settings{% endblock %}
+{% block subtitle %}Optional extras and where your data lives.{% endblock %}
+{% block content %}
+{% if saved == "1" %}<div class="notice" style="margin:0 0 14px">Gemini key saved. "Explain this" buttons will show up under Study next.</div>{% endif %}
+{% if saved == "removed" %}<div class="notice" style="margin:0 0 14px">Gemini key removed.</div>{% endif %}
+{% if error %}<div class="notice" style="margin:0 0 14px;background:#fde8e3;color:#ae4436">That doesn't look like a Gemini key. Copy the whole key with no spaces.</div>{% endif %}
+
+<div class="card">
+  <h3 style="margin-top:0">Gemini explanations</h3>
+  <p class="muted">Optional. With a free Gemini key, StudyAI can explain your weakest concepts in plain language, using only your notes. Everything else works without it.</p>
+  {% if source == "env" %}
+  <p><b>Using the key from your .env file</b> <span class="muted">(ends in {{ ending }})</span></p>
+  {% elif source == "settings" %}
+  <div class="stat-row">
+    <span><b>Key saved</b> <span class="muted">ends in {{ ending }}</span></span>
+    <form method="post" action="/settings/gemini/remove"><button class="button soft small" type="submit">Remove</button></form>
+  </div>
+  {% else %}
+  <ol class="steps">
+    <li>Go to <b>aistudio.google.com/apikey</b> and sign in with a Google account.</li>
+    <li>Click <b>Create API key</b> and copy it.</li>
+    <li>Paste it below.</li>
+  </ol>
+  {% endif %}
+  {% if source != "env" %}
+  <form class="search-box" method="post" action="/settings/gemini" autocomplete="off">
+    <input class="input" type="password" name="key" placeholder="{{ 'Paste a new key to replace it' if source else 'Paste your Gemini API key' }}">
+    <button class="button" type="submit">Save</button>
+  </form>
+  <p class="muted" style="font-size:12px">The key is stored only on this computer.</p>
+  {% endif %}
+</div>
+
+<div class="card">
+  <h3 style="margin-top:0">Your data</h3>
+  <p class="muted">Your notes, quiz answers, and flashcard progress are saved on this computer in:</p>
+  <p><code>{{ data_dir }}</code></p>
+</div>
+{% endblock %}

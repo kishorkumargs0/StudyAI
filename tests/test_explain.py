@@ -46,8 +46,20 @@ def test_only_sends_sentences_about_the_concept():
 def test_unavailable_without_key(monkeypatch):
     monkeypatch.delenv("GEMINI_API_KEY", raising=False)
     assert not explain.available()
-    with pytest.raises(explain.ExplainError, match="GEMINI_API_KEY"):
+    with pytest.raises(explain.ExplainError, match="Settings"):
         explain.explain("Load Factor", NOTES)
+
+
+def test_key_from_settings_or_env(monkeypatch):
+    from app import db
+
+    assert explain.key_source() is None
+    db.set_setting("gemini_api_key", "saved-key")
+    assert explain.api_key() == "saved-key"
+    assert explain.key_source() == "settings"
+    monkeypatch.setenv("GEMINI_API_KEY", "env-key")
+    assert explain.api_key() == "env-key"
+    assert explain.key_source() == "env"
 
 
 def test_explains_with_gemini(key, monkeypatch):
