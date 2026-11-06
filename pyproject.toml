@@ -10,6 +10,7 @@ dependencies = [
     "pypdf>=5",
     "google-genai>=1.0",
     "python-dotenv>=1.0",
+    "platformdirs>=4",
 ]
 
 [tool.uv]

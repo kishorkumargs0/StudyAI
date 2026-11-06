@@ -1,11 +1,15 @@
+import os
 import sqlite3
 from pathlib import Path
 
-DB_PATH = Path(__file__).parent.parent / "data" / "studyai.db"
+from platformdirs import user_data_dir
+
+DATA_DIR = Path(os.environ.get("STUDYAI_DATA") or user_data_dir("StudyAI", appauthor=False))
+DB_PATH = DATA_DIR / "studyai.db"
 
 
 def connect():
-    DB_PATH.parent.mkdir(exist_ok=True)
+    DB_PATH.parent.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
