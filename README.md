@@ -12,7 +12,9 @@ No coding needed. Go to the [latest release](https://github.com/kishorkumargs0/S
 
 **Windows**: download `StudyAI-windows.zip`, unzip it, and double-click `StudyAI.exe`. If Windows shows "Windows protected your PC", click More info, then Run anyway.
 
-Your notes stay on your computer. Gemini explanations are optional and you can add a key in Settings.
+Older Intel Macs and Linux aren't supported by the download yet. Use "Run from source" below instead.
+
+Your notes stay on your computer, in `~/Library/Application Support/StudyAI` on Mac and `%LOCALAPPDATA%\StudyAI` on Windows. Gemini explanations are optional and you can add a key in Settings.
 
 ## What it does
 
@@ -27,6 +29,8 @@ Your notes stay on your computer. Gemini explanations are optional and you can a
 - Explains your top weak concepts with Gemini, using only your notes (optional)
 
 ## Run from source
+
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/), then:
 
 ```
 uv sync
@@ -58,7 +62,7 @@ uv run --group desktop pyinstaller --noconfirm --name StudyAI --windowed --paths
 ## Tests
 
 ```
-uv run pytest
+uv run --group desktop pytest
 uv run ruff check .
 ```
 
