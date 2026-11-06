@@ -1,0 +1,57 @@
+name: Build desktop app
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            asset: StudyAI-mac.zip
+          - os: windows-latest
+            asset: StudyAI-windows.zip
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+
+      - name: Install
+        run: uv sync --group desktop --python 3.12
+
+      - name: Test
+        run: uv run --group desktop pytest -q
+
+      - name: Build
+        run: >
+          uv run --group desktop pyinstaller --noconfirm --clean --name StudyAI --windowed
+          ${{ runner.os == 'Windows' && '--onefile' || '' }}
+          --paths . --add-data app/templates:app/templates --add-data app/static:app/static
+          --collect-submodules uvicorn app/desktop.py
+
+      - name: Zip (Mac)
+        if: runner.os == 'macOS'
+        run: ditto -c -k --keepParent dist/StudyAI.app ${{ matrix.asset }}
+
+      - name: Zip (Windows)
+        if: runner.os == 'Windows'
+        run: Compress-Archive -Path dist/StudyAI.exe -DestinationPath ${{ matrix.asset }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.asset }}
+          path: ${{ matrix.asset }}
+
+      - name: Attach to release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ matrix.asset }}

@@ -4,6 +4,16 @@ Turns lecture notes into study guides, flashcards, and practice quizzes.
 
 The study material is generated from your notes with plain Python. Gemini is optional and only used to explain the few concepts you're weakest on.
 
+## Download
+
+No coding needed. Go to the [latest release](https://github.com/kishorkumargs0/StudyAI/releases/latest) and download the file for your computer.
+
+**Mac (Apple Silicon)**: download `StudyAI-mac.zip`, double-click it, and drag StudyAI into Applications. The first time you open it, macOS will say it can't verify the developer. Open System Settings, go to Privacy & Security, scroll down, and click Open Anyway.
+
+**Windows**: download `StudyAI-windows.zip`, unzip it, and double-click `StudyAI.exe`. If Windows shows "Windows protected your PC", click More info, then Run anyway.
+
+Your notes stay on your computer. Gemini explanations are optional and you can add a key in Settings.
+
 ## What it does
 
 - Paste notes or upload a PDF, TXT, or Markdown file
@@ -16,7 +26,7 @@ The study material is generated from your notes with plain Python. Gemini is opt
 - Searches all your notes with BM25 and stemming
 - Explains your top weak concepts with Gemini, using only your notes (optional)
 
-## Run
+## Run from source
 
 ```
 uv sync
@@ -25,10 +35,24 @@ uv run uvicorn app.main:app --port 8765
 
 Then open http://127.0.0.1:8765
 
-For Gemini explanations, add your key to a `.env` file in this folder:
+Or open it in its own window:
+
+```
+uv run --group desktop python -m app.desktop
+```
+
+For Gemini explanations, add your key in Settings, or put it in a `.env` file in this folder:
 
 ```
 GEMINI_API_KEY=your-key
+```
+
+## Build the app
+
+GitHub Actions builds the Mac and Windows downloads whenever a release is published. To build locally:
+
+```
+uv run --group desktop pyinstaller --noconfirm --name StudyAI --windowed --paths . --add-data app/templates:app/templates --add-data app/static:app/static --collect-submodules uvicorn app/desktop.py
 ```
 
 ## Tests
