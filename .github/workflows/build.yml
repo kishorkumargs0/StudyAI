@@ -15,7 +15,7 @@ jobs:
       matrix:
         include:
           - os: macos-latest
-            asset: StudyAI-mac.zip
+            asset: StudyAI-mac.dmg
           - os: windows-latest
             asset: StudyAI-windows.zip
     runs-on: ${{ matrix.os }}
@@ -37,9 +37,13 @@ jobs:
           --paths . --add-data app/templates:app/templates --add-data app/static:app/static
           --collect-submodules uvicorn app/desktop.py
 
-      - name: Zip (Mac)
+      - name: Disk image (Mac)
         if: runner.os == 'macOS'
-        run: ditto -c -k --keepParent dist/StudyAI.app ${{ matrix.asset }}
+        run: |
+          mkdir dmg
+          cp -R dist/StudyAI.app dmg/
+          ln -s /Applications dmg/Applications
+          hdiutil create -volname StudyAI -srcfolder dmg -ov -format UDZO ${{ matrix.asset }}
 
       - name: Zip (Windows)
         if: runner.os == 'Windows'
